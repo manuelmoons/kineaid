@@ -59,6 +59,16 @@ export function useAuth() {
   return ctx;
 }
 
+/**
+ * Supabase puts auth errors (e.g. an expired or already-used email link) in the URL
+ * (#error_code=otp_expired&...). Capture it once at startup, before the router redirects.
+ */
+const initialAuthError: string | null = (() => {
+  const params = new URLSearchParams(window.location.hash.slice(1) || window.location.search);
+  return params.get('error_code') ?? params.get('error');
+})();
+export const getInitialAuthError = () => initialAuthError;
+
 const PENDING_INVITE_KEY = 'kineaid.pendingInvite';
 export const pendingInvite = {
   get: () => {

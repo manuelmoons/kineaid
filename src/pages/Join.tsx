@@ -9,7 +9,7 @@ export default function Join() {
   const { code = '' } = useParams();
   const { t } = useTranslation();
   const { session, loading } = useAuth();
-  const [state, setState] = useState<'joining' | 'done' | 'error'>('joining');
+  const [state, setState] = useState<'joining' | 'done' | 'error' | 'own'>('joining');
   const [practiceName, setPracticeName] = useState('');
   const started = useRef(false);
 
@@ -18,7 +18,7 @@ export default function Join() {
     started.current = true;
     supabase.rpc('join_practice', { p_code: code }).then(({ data, error }) => {
       pendingInvite.clear();
-      if (error) return setState('error');
+      if (error) return setState(error.message.includes('own practice') ? 'own' : 'error');
       setPracticeName((data as { name: string }).name);
       try {
         localStorage.setItem('kineaid.onboarded', '1');
@@ -43,6 +43,14 @@ export default function Join() {
           <p className="text-lg font-semibold">{t('join.success', { name: practiceName })}</p>
           <Link to="/patient" className="btn-primary w-full">
             {t('patient.today')}
+          </Link>
+        </>
+      )}
+      {state === 'own' && (
+        <>
+          <p className="text-amber-800">{t('join.ownPractice')}</p>
+          <Link to="/kine" className="btn-secondary w-full">
+            {t('kine.dashboard')}
           </Link>
         </>
       )}

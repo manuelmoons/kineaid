@@ -23,7 +23,13 @@
     "or": "or",
     "noAccount": "No account yet?",
     "haveAccount": "Already have an account?",
-    "invitedBy": "You were invited by {{name}}. Sign in or create an account to continue."
+    "invitedBy": "You were invited by {{name}}. Sign in or create an account to continue.",
+    "alreadyRegistered": "An account with this email address already exists. Sign in, or use a different email address.",
+    "invalidCredentials": "Email address or password is incorrect.",
+    "emailNotConfirmed": "Your email address is not confirmed yet. Click the link in the email we sent you.",
+    "rateLimited": "Too many attempts or emails in a short time. Please try again within an hour.",
+    "linkExpired": "This email link has expired or was already used. Just sign in, or request a new sign-in link.",
+    "linkError": "Something went wrong with the link from your email. Please try signing in again."
   },
   "onboarding": {
     "title": "Welcome to KineAid",
@@ -40,7 +46,8 @@
   "join": {
     "joining": "Connecting…",
     "success": "You are now connected to {{name}}.",
-    "invalid": "This invite code is invalid or has expired."
+    "invalid": "This invite code does not exist (anymore). Ask your physio for the current link or QR code.",
+    "ownPractice": "You are signed in with the physiotherapist's own account. Sign out and register the patient with a different email address."
   },
   "patient": {
     "today": "Today",

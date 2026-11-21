@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { pendingInvite, useAuth } from '../lib/auth';
+import { getInitialAuthError, pendingInvite, useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
 
 export default function Login() {
@@ -12,7 +12,11 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() => {
+    const code = getInitialAuthError();
+    if (!code) return null;
+    return code === 'otp_expired' ? t('login.linkExpired') : t('login.linkError');
+  });
   const [busy, setBusy] = useState(false);
   const [inviter, setInviter] = useState<string | null>(null);
 
@@ -38,20 +42,32 @@ export default function Login() {
     setMessage(null);
     const { error } = await fn();
     setBusy(false);
-    if (error) setError(error.message);
+    if (error) setError(translateAuthError(error.message));
     else if (successMsg) setMessage(successMsg);
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const translateAuthError = (msg: string) => {
+    if (/invalid login credentials/i.test(msg)) return t('login.invalidCredentials');
+    if (/email not confirmed/i.test(msg)) return t('login.emailNotConfirmed');
+    if (/rate limit/i.test(msg)) return t('login.rateLimited');
+    return msg;
+  };
+
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (mode === 'signIn') {
       run(() => supabase.auth.signInWithPassword({ email, password }));
-    } else {
-      run(
-        () => supabase.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } }),
-        t('login.signUpSent'),
-      );
+      return;
     }
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+    const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } });
+    setBusy(false);
+    if (error) return setError(translateAuthError(error.message));
+    // Supabase hides whether an address is taken: an existing account comes back with no identities.
+    if (data.user && data.user.identities?.length === 0) return setError(t('login.alreadyRegistered'));
+    setMessage(t('login.signUpSent'));
   };
 
   return (
