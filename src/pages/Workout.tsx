@@ -7,8 +7,9 @@ import { completeSession, getProgram, logExercise, startSession, type ProgramIte
 import { beep, keepScreenOn, unlockAudio } from '../lib/feedback';
 import ExerciseInfo from '../components/ExerciseInfo';
 
-type Phase = 'ready' | 'hold' | 'relax' | 'rest' | 'done';
+type Phase = 'ready' | 'hold' | 'relax' | 'switch' | 'rest' | 'done';
 const RELAX_SEC = 3; // pause between holds within one set
+const SWITCH_SEC = 5; // time to switch to the other side
 
 interface ItemState {
   setsDone: number;
@@ -156,6 +157,9 @@ function ExercisePlayer({
   const isTime = ex.kind === 'time';
   const repsPerSet = isTime ? Math.max(1, item.reps ?? 1) : item.reps ?? 10;
   const holdSec = item.hold_sec ?? 30;
+  const perSide = !!ex.per_side;
+  // Time exercises done per side: all holds on the left, switch, then all holds on the right.
+  const holdsPerSet = repsPerSet * (perSide ? 2 : 1);
 
   const alreadyDone = state.completed || state.skipped;
   const [setsDone, setSetsDone] = useState(state.setsDone);
@@ -192,7 +196,7 @@ function ExercisePlayer({
 
   // Countdown loop
   useEffect(() => {
-    if (!['hold', 'relax', 'rest'].includes(phase) || paused) return;
+    if (!['hold', 'relax', 'switch', 'rest'].includes(phase) || paused) return;
     const timer = window.setInterval(() => {
       const left = Math.max(0, endAt.current - Date.now());
       setRemaining(left);
@@ -205,13 +209,14 @@ function ExercisePlayer({
       window.clearInterval(timer);
       if (phase === 'hold') {
         const rep = repInSet + 1;
-        if (rep >= repsPerSet) completeSet();
+        if (rep >= holdsPerSet) completeSet();
         else {
           beep('go');
           setRepInSet(rep);
-          startTimer(RELAX_SEC, 'relax');
+          if (perSide && rep === repsPerSet) startTimer(SWITCH_SEC, 'switch');
+          else startTimer(RELAX_SEC, 'relax');
         }
-      } else if (phase === 'relax') {
+      } else if (phase === 'relax' || phase === 'switch') {
         beep('go');
         startTimer(holdSec, 'hold');
       } else if (phase === 'rest') {
@@ -241,14 +246,16 @@ function ExercisePlayer({
   };
 
   const secs = Math.ceil(remaining / 1000);
-  const total = phase === 'hold' ? holdSec : phase === 'rest' ? item.rest_sec : RELAX_SEC;
+  const total = phase === 'hold' ? holdSec : phase === 'rest' ? item.rest_sec : phase === 'switch' ? SWITCH_SEC : RELAX_SEC;
   const fraction = total > 0 ? remaining / (total * 1000) : 0;
+  const side: 'left' | 'right' | null = perSide && isTime ? (repInSet < repsPerSet ? 'left' : 'right') : null;
 
-  const dosage = isTime
-    ? item.reps && item.reps > 1
-      ? t('workout.doseTimeReps', { sets: item.sets, reps: item.reps, hold: holdSec })
-      : t('workout.doseTime', { sets: item.sets, hold: holdSec })
-    : t('workout.doseReps', { sets: item.sets, reps: repsPerSet });
+  const dosage =
+    (isTime
+      ? item.reps && item.reps > 1
+        ? t('workout.doseTimeReps', { sets: item.sets, reps: item.reps, hold: holdSec })
+        : t('workout.doseTime', { sets: item.sets, hold: holdSec })
+      : t('workout.doseReps', { sets: item.sets, reps: repsPerSet })) + (perSide ? ` ${t('workout.perSide')}` : '');
 
   return (
     <div className="space-y-4">
@@ -264,10 +271,15 @@ function ExercisePlayer({
           {phase === 'done'
             ? t('workout.setsDone', { n: Math.min(setsDone, item.sets), total: item.sets })
             : t('workout.setOf', { n: Math.min(setsDone + 1, item.sets), total: item.sets })}
-          {isTime && repsPerSet > 1 && phase !== 'done' && <> · {t('workout.repOf', { n: repInSet + 1, total: repsPerSet })}</>}
+          {isTime && repsPerSet > 1 && phase !== 'done' && <> · {t('workout.repOf', { n: (repInSet % repsPerSet) + 1, total: repsPerSet })}</>}
         </p>
+        {side && phase !== 'done' && phase !== 'rest' && (
+          <p className="mx-auto w-fit rounded-full bg-brand-700 px-4 py-1 text-lg font-bold uppercase tracking-wide text-white">
+            {phase === 'switch' ? `⇄ ${t('workout.right')}` : t(`workout.${side}`)}
+          </p>
+        )}
 
-        {(phase === 'hold' || phase === 'relax' || phase === 'rest') && (
+        {(phase === 'hold' || phase === 'relax' || phase === 'switch' || phase === 'rest') && (
           <div className="space-y-3">
             <TimerRing fraction={fraction} label={String(secs)} sub={t(`workout.phase.${phase}`)} tone={phase === 'hold' ? 'brand' : 'slate'} />
             <div className="flex justify-center gap-2">
@@ -292,6 +304,7 @@ function ExercisePlayer({
             ) : (
               <>
                 <p className="text-4xl font-bold text-brand-800">{t('workout.repsBig', { reps: repsPerSet })}</p>
+                {perSide && <p className="text-sm font-medium text-brand-800">{t('workout.perSideAlternate')}</p>}
                 <button
                   className="btn-primary h-20 w-full text-xl"
                   onClick={() => {

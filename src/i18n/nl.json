@@ -37,6 +37,7 @@
   "exercise": {
     "kindTime": "Aanhouden (tijd)",
     "kindReps": "Herhalingen",
+    "perSide": "per kant",
     "photo": "Foto {{n}}",
     "onlyInEnglish": "Deze oefening is (nog) niet vertaald en wordt in het Engels getoond.",
     "instructions": "Zo doe je het",
@@ -94,9 +95,14 @@
     "setOf": "Set {{n}} van {{total}}",
     "setsDone": "{{n}} van {{total}} sets gedaan",
     "repOf": "keer {{n}} van {{total}}",
+    "perSide": "(per kant)",
+    "perSideAlternate": "per kant: links en rechts afwisselen",
+    "left": "Links",
+    "right": "Rechts",
     "phase": {
       "hold": "aanhouden",
       "relax": "ontspan",
+      "switch": "wissel van kant",
       "rest": "rust"
     },
     "startTimer": "Start",

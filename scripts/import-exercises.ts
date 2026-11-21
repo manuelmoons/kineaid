@@ -34,6 +34,7 @@ interface ImportExercise {
   license: string;
   author: string;
   kind: 'reps' | 'time';
+  per_side: boolean;
   body_parts: BodyPart[];
   muscles: string[];
   equipment: string | null;
@@ -63,6 +64,7 @@ async function loadKineAid(): Promise<ImportExercise[]> {
     license: 'KineAid',
     author: 'KineAid',
     kind: e.kind,
+    per_side: !!e.per_side,
     body_parts: e.body_parts,
     muscles: e.muscles ?? [],
     equipment: e.equipment ?? null,
@@ -98,6 +100,7 @@ async function loadFreeExerciseDb(): Promise<ImportExercise[]> {
         license: 'Unlicense (public domain)',
         author: 'free-exercise-db contributors',
         kind: isStretch ? 'time' : 'reps',
+        per_side: false,
         body_parts: bodyParts.length ? bodyParts : e.category === 'cardio' ? ['full_body'] : [],
         muscles,
         equipment: e.equipment ?? null,
@@ -193,6 +196,7 @@ async function loadWger(skipNames: Set<string>): Promise<ImportExercise[]> {
       license: licenseName(en.license ?? info.license) || 'CC-BY-SA 4.0',
       author: en.license_author || info.license_author || 'wger.de contributors',
       kind: 'reps',
+      per_side: false,
       body_parts: bodyParts.length ? bodyParts : isCardio ? ['full_body'] : [],
       muscles,
       equipment: (info.equipment ?? []).map((e: any) => e.name).join(', ') || null,

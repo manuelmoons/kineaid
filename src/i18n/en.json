@@ -37,6 +37,7 @@
   "exercise": {
     "kindTime": "Hold (time)",
     "kindReps": "Repetitions",
+    "perSide": "each side",
     "photo": "Photo {{n}}",
     "onlyInEnglish": "This exercise is not translated yet.",
     "instructions": "How to do it",
@@ -94,9 +95,14 @@
     "setOf": "Set {{n}} of {{total}}",
     "setsDone": "{{n}} of {{total}} sets done",
     "repOf": "time {{n}} of {{total}}",
+    "perSide": "(each side)",
+    "perSideAlternate": "each side: alternate left and right",
+    "left": "Left",
+    "right": "Right",
     "phase": {
       "hold": "hold",
       "relax": "relax",
+      "switch": "switch sides",
       "rest": "rest"
     },
     "startTimer": "Start",

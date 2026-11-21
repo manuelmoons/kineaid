@@ -42,6 +42,7 @@ export default function ExerciseDetail() {
         </div>
         <p className="mt-2 text-sm text-slate-600">
           {t('exercise.suggested')}: {dosage}
+          {d.per_side && ` (${t('exercise.perSide')})`}
         </p>
       </div>
       <ExerciseInfo exercise={exercise} />

@@ -206,7 +206,10 @@ function ItemRow({
           <Link to={`/exercise/${ex.id}`} className="font-semibold hover:underline">
             {tr?.name}
           </Link>
-          <p className="text-xs text-slate-500">{isTime ? t('exercise.kindTime') : t('exercise.kindReps')}</p>
+          <p className="text-xs text-slate-500">
+            {isTime ? t('exercise.kindTime') : t('exercise.kindReps')}
+            {ex.per_side && ` · ${t('exercise.perSide')}`}
+          </p>
         </div>
         {canEdit && (
           <div className="flex shrink-0 flex-col gap-1">

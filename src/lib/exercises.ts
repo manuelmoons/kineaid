@@ -35,6 +35,7 @@ export interface ExerciseImage {
 export interface Exercise {
   id: string;
   kind: ExerciseKind;
+  per_side: boolean;
   body_parts: BodyPart[];
   muscles: string[];
   equipment: string | null;
@@ -97,7 +98,7 @@ export async function searchExercises(opts: {
 }
 
 export const EXERCISE_DETAIL_SELECT =
-  'id, kind, body_parts, muscles, equipment, level, default_sets, default_reps, default_hold_sec, default_rest_sec, video_url, source, source_url, license, author, owner_id, exercise_translations(locale, name, description, instructions, attention_points), exercise_images(id, url, position, license, author)';
+  'id, kind, per_side, body_parts, muscles, equipment, level, default_sets, default_reps, default_hold_sec, default_rest_sec, video_url, source, source_url, license, author, owner_id, exercise_translations(locale, name, description, instructions, attention_points), exercise_images(id, url, position, license, author)';
 
 export async function getExercise(id: string): Promise<Exercise> {
   const { data, error } = await supabase

@@ -418,5 +418,93 @@
       "instructions": ["Sit on the front of a sturdy chair, feet hip-width apart.", "Lean slightly forward and stand up without using your hands.", "Sit back down with control."],
       "attention_points": ["Knees in line with your toes; don't let them collapse inwards.", "Sit down slowly; don't drop.", "Too hard? Use a higher chair or your hands."]
     }
+  },
+  {
+    "id": "knee-to-opposite-shoulder",
+    "kind": "time",
+    "per_side": true,
+    "body_parts": ["hip", "lower_back"],
+    "muscles": ["piriformis", "gluteus medius", "gluteus maximus"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 1, "default_reps": 1, "default_hold_sec": 30, "default_rest_sec": 15,
+    "nl": {
+      "name": "Knie naar tegenovergestelde schouder (bilrek)",
+      "description": "Rekt de buiten- en achterkant van de bil (o.a. piriformis).",
+      "instructions": ["Lig op je rug met beide benen gestrekt of één knie gebogen.", "Neem de knie van het te rekken been met de tegenovergestelde hand vast (rechterknie → linkerhand).", "Trek de knie schuin naar je tegenovergestelde schouder tot je een rek voelt aan de buitenkant/achterkant van je bil.", "Houd vast en wissel daarna van kant."],
+      "attention_points": ["Houd je bekken plat op de grond; draai niet mee met je romp.", "Je voelt de rek in je bil, niet in je lies of knie. Voel je iets in de lies? Trek dan minder ver.", "Blijf rustig doorademen en ontspan je schouders."]
+    },
+    "en": {
+      "name": "Knee to opposite shoulder stretch",
+      "description": "Stretches the outer and back part of the buttock (including the piriformis).",
+      "instructions": ["Lie on your back with both legs straight or one knee bent.", "Hold the knee of the leg you want to stretch with the opposite hand (right knee → left hand).", "Pull the knee diagonally towards your opposite shoulder until you feel a stretch in the outer/back part of your buttock.", "Hold, then switch sides."],
+      "attention_points": ["Keep your pelvis flat on the floor; don't rotate your trunk.", "You should feel the stretch in your buttock, not your groin or knee. Feel it in the groin? Pull less far.", "Keep breathing calmly and relax your shoulders."]
+    }
+  },
+  {
+    "id": "active-hamstring-stretch",
+    "kind": "reps",
+    "per_side": true,
+    "body_parts": ["knee", "hip"],
+    "muscles": ["hamstrings"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 1, "default_reps": 15, "default_rest_sec": 15,
+    "nl": {
+      "name": "Hamstring strekken vanuit 90° (liggend)",
+      "description": "Actieve rek van de achterkant van de dij.",
+      "instructions": ["Lig op je rug en breng één been omhoog tot je heup 90° gebogen is.", "Neem met beide handen je dij vast, net onder de knie.", "Strek je knie zo ver mogelijk tot je een rek voelt achteraan je dij.", "Buig de knie terug en herhaal. Doe daarna het andere been."],
+      "attention_points": ["Je dij blijft op dezelfde plaats; alleen je onderbeen beweegt.", "Strek tot een stevige rek, niet tot pijn achter de knie.", "Houd je andere been en je onderrug ontspannen op de grond.", "Trek je tenen licht naar je toe voor een sterkere rek."]
+    },
+    "en": {
+      "name": "Active hamstring stretch from 90° (lying)",
+      "description": "Active stretch of the back of the thigh.",
+      "instructions": ["Lie on your back and lift one leg until your hip is bent at 90°.", "Hold your thigh with both hands, just below the knee.", "Straighten your knee as far as you can until you feel a stretch at the back of your thigh.", "Bend the knee again and repeat. Then do the other leg."],
+      "attention_points": ["Your thigh stays in place; only your lower leg moves.", "Straighten to a firm stretch, not to pain behind the knee.", "Keep your other leg and lower back relaxed on the floor.", "Pull your toes slightly towards you for a stronger stretch."]
+    }
+  },
+  {
+    "id": "figure-four-stretch",
+    "kind": "time",
+    "per_side": true,
+    "body_parts": ["hip"],
+    "muscles": ["piriformis", "gluteus maximus", "hip external rotators"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 1, "default_reps": 1, "default_hold_sec": 30, "default_rest_sec": 15,
+    "nl": {
+      "name": "Figuur-4-rek (gekruist been, liggend)",
+      "description": "Rekt de heup en bil aan de kant van het gekruiste been.",
+      "instructions": ["Lig op je rug met beide knieën gebogen, voeten plat op de grond.", "Leg de enkel van het te rekken been op de knie van het andere been (een '4').", "Neem het onderste been vast achter de dij (of op de knie) en trek het naar je borst.", "Houd vast tot je de rek voelt in de heup/bil van het gekruiste been. Wissel daarna van kant."],
+      "attention_points": ["Houd je hoofd en schouders ontspannen op de grond.", "Duw de knie van het gekruiste been eventueel licht van je weg voor meer rek.", "Houd de voet van het gekruiste been actief (tenen naar je toe), dat beschermt je knie.", "Rek, maar geen pijn in de knie."]
+    },
+    "en": {
+      "name": "Supine figure-four stretch",
+      "description": "Stretches the hip and buttock on the side of the crossed leg.",
+      "instructions": ["Lie on your back with both knees bent, feet flat on the floor.", "Place the ankle of the leg to stretch on the knee of the other leg (a '4').", "Hold the bottom leg behind the thigh (or on the knee) and pull it towards your chest.", "Hold until you feel the stretch in the hip/buttock of the crossed leg. Then switch sides."],
+      "attention_points": ["Keep your head and shoulders relaxed on the floor.", "Gently push the knee of the crossed leg away from you for a deeper stretch.", "Keep the foot of the crossed leg active (toes towards you); this protects your knee.", "Stretch, but no pain in the knee."]
+    }
+  },
+  {
+    "id": "chair-supported-split-squat",
+    "kind": "reps",
+    "per_side": true,
+    "body_parts": ["knee", "hip"],
+    "muscles": ["quadriceps", "glutes", "hip flexors"],
+    "equipment": "chair",
+    "level": "beginner",
+    "default_sets": 1, "default_reps": 10, "default_rest_sec": 30,
+    "nl": {
+      "name": "Uitvalspas met steun op een stoel",
+      "description": "Versterkt dij en bil, met steun voor je evenwicht.",
+      "instructions": ["Sta naast of achter een stevige stoel en steun met je handen op de stoel.", "Zet één been voor (naast de stoel) en het andere been een grote stap naar achter, op de bal van je voet.", "Zak recht naar beneden met je achterste knie richting de grond (hij mag de grond raken, maar het hoeft niet).", "Kom terug omhoog en wissel van been. Doe links en rechts afwisselend."],
+      "attention_points": ["Je voorste knie blijft boven je enkel en wijst in de richting van je tenen.", "Houd je romp rechtop; leun niet voorover op de stoel.", "Zak gecontroleerd, niet laten vallen op je knie.", "Gebruik de stoel voor evenwicht, niet om jezelf omhoog te trekken."]
+    },
+    "en": {
+      "name": "Chair-supported split squat (lunge)",
+      "description": "Strengthens the thigh and buttock, with support for balance.",
+      "instructions": ["Stand next to or behind a sturdy chair and support yourself with your hands on the chair.", "Put one leg forward (next to the chair) and take a big step back with the other leg, onto the ball of your foot.", "Lower straight down with your back knee towards the floor (it may touch the floor, but doesn't have to).", "Come back up and switch legs. Alternate left and right."],
+      "attention_points": ["Your front knee stays above your ankle and points in the direction of your toes.", "Keep your trunk upright; don't lean forward onto the chair.", "Lower with control; don't drop onto your knee.", "Use the chair for balance, not to pull yourself up."]
+    }
   }
 ]
