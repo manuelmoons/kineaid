@@ -49,6 +49,11 @@
     "invalid": "This invite code does not exist (anymore). Ask your physio for the current link or QR code.",
     "ownPractice": "You are signed in with the physiotherapist's own account. Sign out and register the patient with a different email address."
   },
+  "profile": {
+    "askName": "What's your name?",
+    "askNameHelp": "So your physiotherapist knows who you are.",
+    "save": "Save"
+  },
   "patient": {
     "today": "Today",
     "myKine": "My physio",

@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       return;
     }
-    const { data } = await supabase.from('profiles').select('id, role, full_name, locale').eq('id', userId).single();
+    const { data } = await supabase.from('profiles').select('id, role, full_name, email, locale').eq('id', userId).single();
     setProfile((data as Profile) ?? null);
   }, []);
 

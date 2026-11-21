@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
+import NamePrompt from '../components/NamePrompt';
 
 export default function PatientHome() {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function PatientHome() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">{t('patient.today')}</h1>
+      <NamePrompt />
       {kines.length > 0 && (
         <p className="text-sm text-slate-600">
           {t('patient.myKine')}: <span className="font-semibold">{kines.join(', ')}</span>

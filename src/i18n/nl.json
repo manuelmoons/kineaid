@@ -49,6 +49,11 @@
     "invalid": "Deze uitnodigingscode bestaat niet (meer). Vraag je kine om de huidige link of QR-code.",
     "ownPractice": "Je bent aangemeld met het account van de kinesitherapeut zelf. Meld je af en registreer de patiënt met een ander e-mailadres."
   },
+  "profile": {
+    "askName": "Hoe heet je?",
+    "askNameHelp": "Zo weet je kinesitherapeut wie je bent.",
+    "save": "Opslaan"
+  },
   "patient": {
     "today": "Vandaag",
     "myKine": "Mijn kine",

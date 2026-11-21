@@ -9,6 +9,7 @@ interface PatientRow {
   patient_id: string;
   created_at: string;
   name: string | null;
+  email: string | null;
 }
 
 export default function KineHome() {
@@ -21,20 +22,40 @@ export default function KineHome() {
   useEffect(() => {
     if (!profile || profile.role !== 'kine') return;
     supabase.from('practices').select('*').eq('kine_id', profile.id).single().then(({ data }) => setPractice(data as Practice));
-    supabase
-      .from('patient_links')
-      .select('patient_id, created_at')
-      .eq('kine_id', profile.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .then(async ({ data: links }) => {
-        const ids = (links ?? []).map((l) => l.patient_id as string);
-        const { data: profiles } = ids.length
-          ? await supabase.from('profiles').select('id, full_name').in('id', ids)
-          : { data: [] as { id: string; full_name: string | null }[] };
-        const nameOf = new Map((profiles ?? []).map((p) => [p.id, p.full_name]));
-        setPatients((links ?? []).map((l) => ({ patient_id: l.patient_id, created_at: l.created_at, name: nameOf.get(l.patient_id) ?? null })));
-      });
+
+    const loadPatients = async () => {
+      const { data: links } = await supabase
+        .from('patient_links')
+        .select('patient_id, created_at')
+        .eq('kine_id', profile.id)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+      const ids = (links ?? []).map((l) => l.patient_id as string);
+      const { data: profiles } = ids.length
+        ? await supabase.from('profiles').select('id, full_name, email').in('id', ids)
+        : { data: [] as { id: string; full_name: string | null; email: string | null }[] };
+      const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+      setPatients(
+        (links ?? []).map((l) => ({
+          patient_id: l.patient_id,
+          created_at: l.created_at,
+          name: byId.get(l.patient_id)?.full_name ?? null,
+          email: byId.get(l.patient_id)?.email ?? null,
+        })),
+      );
+    };
+
+    loadPatients();
+    // Refresh when the kine comes back to the tab/app (e.g. after a patient scanned the QR code)
+    const onVisible = () => document.visibilityState === 'visible' && loadPatients();
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    const timer = window.setInterval(loadPatients, 30_000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+      window.clearInterval(timer);
+    };
   }, [profile]);
 
   if (profile && profile.role !== 'kine') return <Navigate to="/patient" replace />;
@@ -89,8 +110,11 @@ export default function KineHome() {
         ) : (
           <ul className="divide-y divide-slate-100">
             {patients.map((p) => (
-              <li key={p.patient_id} className="flex justify-between py-2">
-                <span>{p.name ?? '—'}</span>
+              <li key={p.patient_id} className="flex items-center justify-between gap-3 py-2">
+                <span className="min-w-0">
+                  <span className="block truncate font-medium">{p.name ?? p.email ?? '—'}</span>
+                  {p.name && p.email && <span className="block truncate text-sm text-slate-500">{p.email}</span>}
+                </span>
                 <span className="text-sm text-slate-500">{new Date(p.created_at).toLocaleDateString()}</span>
               </li>
             ))}
