@@ -65,7 +65,10 @@ Het script gebruikt de `SUPABASE_SECRET_KEY` (*Secret key*, `sb_secret_…`). Di
 4. Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`.
 5. Voeg de Pages-URL toe aan de Supabase Redirect URLs.
 
-De bestanden `public/_redirects` zorgen ervoor dat links zoals `/join/ABC123` rechtstreeks werken.
+Cloudflare Pages valt voor onbekende paden automatisch terug op `index.html`, dus links zoals
+`/join/ABC123` werken zonder extra configuratie.
+
+**Live:** https://kineaid.pages.dev, die automatisch bijwerkt bij elke push naar `main`.
 
 ## Projectstructuur
 
