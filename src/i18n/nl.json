@@ -8,7 +8,7 @@
   },
   "setup": {
     "title": "Supabase is nog niet ingesteld",
-    "body": "Kopieer .env.example naar .env en vul VITE_SUPABASE_URL en VITE_SUPABASE_ANON_KEY in. Zie README.md."
+    "body": "Kopieer .env.example naar .env en vul VITE_SUPABASE_URL en VITE_SUPABASE_PUBLISHABLE_KEY in. Zie README.md."
   },
   "login": {
     "title": "Aanmelden",

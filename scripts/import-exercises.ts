@@ -11,7 +11,7 @@
  *   npm run import:exercises -- --sources=kineaid,free-exercise-db
  *   npm run import:exercises -- --dry-run            # writes scripts/.cache/preview.json, no DB writes
  *
- * Needs VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env (not needed for --dry-run).
+ * Needs VITE_SUPABASE_URL and SUPABASE_SECRET_KEY in .env (not needed for --dry-run).
  */
 import 'dotenv/config';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -220,8 +220,8 @@ async function loadWger(skipNames: Set<string>): Promise<ImportExercise[]> {
 // ─── Supabase upsert ──────────────────────────────────────────
 async function upsertAll(exercises: ImportExercise[]) {
   const url = process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Set VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env');
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (!url || !key) throw new Error('Set VITE_SUPABASE_URL and SUPABASE_SECRET_KEY in .env');
   const db = createClient(url, key, { auth: { persistSession: false } });
 
   const CHUNK = 100;

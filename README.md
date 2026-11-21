@@ -19,13 +19,16 @@ de patiënt voert ze uit met timer en teller. Zie [PLAN.md](PLAN.md) voor het vo
 ## 2. Supabase instellen
 
 1. Maak een nieuw project aan, regio **Central EU (Frankfurt)**.
-2. Open **SQL Editor**, plak de inhoud van [supabase/migrations/0001_init.sql](supabase/migrations/0001_init.sql) en klik op **Run**.
+2. Open **SQL Editor** en voer na elkaar de scripts in [supabase/migrations](supabase/migrations) uit
+   (`0001_init.sql`, `0002_fix_invite_code.sql`, `0003_grants.sql`): plakken → **Run**.
 3. **Authentication → URL Configuration**: zet *Site URL* op `http://localhost:5173`
    (later je Cloudflare-URL) en voeg beide toe aan *Redirect URLs* met `/**` erachter.
 4. (Optioneel) **Authentication → Providers → Google**: aanzetten met een OAuth-client uit de
    [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
    Redirect-URI: `https://<jouw-project>.supabase.co/auth/v1/callback`.
-5. Kopieer `.env.example` naar `.env` en vul de waarden in uit **Project Settings → API**.
+5. Kopieer `.env.example` naar `.env` en vul de waarden in uit **Project Settings → API Keys**:
+   de *Project URL* (`https://<project-id>.supabase.co`) en de *Publishable key* (`sb_publishable_…`,
+   vroeger "anon key").
 
 ## 3. Lokaal starten
 
@@ -52,14 +55,14 @@ Bron, licentie en auteur worden per oefening bewaard en getoond op de pagina **B
 - Alleen bepaalde bronnen: `npm run import:exercises -- --sources=kineaid,free-exercise-db`
 - Eerst bekijken zonder te schrijven: `npm run import:exercises -- --dry-run`
 
-Het script gebruikt de `SUPABASE_SERVICE_ROLE_KEY`. Die sleutel hoort **nooit** in de app of in Git.
+Het script gebruikt de `SUPABASE_SECRET_KEY` (*Secret key*, `sb_secret_…`). Die sleutel hoort **nooit** in de app of in Git.
 
 ## 5. Gratis online zetten (Cloudflare Pages)
 
 1. Zet de code op GitHub.
 2. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git**.
 3. Build command `npm run build`, output directory `dist`.
-4. Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`.
+4. Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`.
 5. Voeg de Pages-URL toe aan de Supabase Redirect URLs.
 
 De bestanden `public/_redirects` zorgen ervoor dat links zoals `/join/ABC123` rechtstreeks werken.
