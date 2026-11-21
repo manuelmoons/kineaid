@@ -1,7 +1,9 @@
 -- KineAid – initial schema
 -- Run in Supabase: SQL Editor → paste → Run (or `supabase db push` with the CLI).
 
-create extension if not exists pgcrypto;
+-- Note: gen_random_uuid() is built into Postgres 13+, so no extension is needed.
+-- (pgcrypto lives in the "extensions" schema on Supabase and is not visible from
+-- functions that use `set search_path = public`.)
 
 -- ─────────────────────────────────────────────────────────────
 -- Profiles & roles
@@ -37,7 +39,7 @@ create table public.practices (
   id           uuid primary key default gen_random_uuid(),
   kine_id      uuid not null unique references public.profiles (id) on delete cascade,
   name         text not null,
-  invite_code  text not null unique default upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 8)),
+  invite_code  text not null unique default upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8)),
   created_at   timestamptz not null default now()
 );
 
@@ -110,7 +112,7 @@ $$;
 create or replace function public.regenerate_invite_code()
 returns text language sql security definer set search_path = public as $$
   update practices
-     set invite_code = upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 8))
+     set invite_code = upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))
    where kine_id = auth.uid()
   returning invite_code;
 $$;
