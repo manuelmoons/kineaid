@@ -1,0 +1,422 @@
+[
+  {
+    "id": "bridge",
+    "kind": "reps",
+    "body_parts": ["hip", "lower_back", "core"],
+    "muscles": ["glutes", "hamstrings"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 10, "default_rest_sec": 30,
+    "nl": {
+      "name": "Bruggetje",
+      "description": "Versterkt bilspieren en onderrug.",
+      "instructions": ["Lig op je rug, knieën gebogen, voeten plat op de grond op heupbreedte.", "Span je buik licht aan en duw je bekken omhoog tot schouders, heupen en knieën op één lijn liggen.", "Houd 2 seconden vast en zak rustig terug."],
+      "attention_points": ["Duw vanuit je hielen, niet vanuit je tenen.", "Maak geen holle rug bovenaan: stop wanneer je lichaam een rechte lijn vormt.", "Houd je knieën op heupbreedte; laat ze niet naar binnen vallen."]
+    },
+    "en": {
+      "name": "Glute bridge",
+      "description": "Strengthens the glutes and lower back.",
+      "instructions": ["Lie on your back, knees bent, feet flat on the floor hip-width apart.", "Gently brace your abdomen and lift your pelvis until shoulders, hips and knees form a straight line.", "Hold for 2 seconds and lower slowly."],
+      "attention_points": ["Push through your heels, not your toes.", "Don't arch your lower back at the top: stop when your body forms a straight line.", "Keep your knees hip-width apart; don't let them collapse inwards."]
+    }
+  },
+  {
+    "id": "clamshell",
+    "kind": "reps",
+    "body_parts": ["hip"],
+    "muscles": ["gluteus medius"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 12, "default_rest_sec": 30,
+    "nl": {
+      "name": "Schelpje (clamshell)",
+      "description": "Versterkt de zijkant van de heup (gluteus medius).",
+      "instructions": ["Lig op je zij met heupen en knieën gebogen, voeten op elkaar.", "Houd je voeten samen en draai je bovenste knie omhoog.", "Laat de knie rustig weer zakken."],
+      "attention_points": ["Je bekken mag niet naar achter kantelen; houd je heupen gestapeld.", "Beweeg traag en gecontroleerd.", "Je moet het aan de zijkant van je bil voelen, niet in je onderrug."]
+    },
+    "en": {
+      "name": "Clamshell",
+      "description": "Strengthens the side of the hip (gluteus medius).",
+      "instructions": ["Lie on your side with hips and knees bent, feet together.", "Keeping your feet together, lift your top knee.", "Slowly lower the knee again."],
+      "attention_points": ["Don't let your pelvis roll backwards; keep your hips stacked.", "Move slowly and with control.", "You should feel it on the side of your buttock, not in your lower back."]
+    }
+  },
+  {
+    "id": "quad-set",
+    "kind": "time",
+    "body_parts": ["knee"],
+    "muscles": ["quadriceps"],
+    "equipment": "towel",
+    "level": "beginner",
+    "default_sets": 3, "default_hold_sec": 5, "default_reps": 10, "default_rest_sec": 15,
+    "nl": {
+      "name": "Knie aanspannen (quad set)",
+      "description": "Activeert de dijspier, vaak gebruikt na een knie-operatie.",
+      "instructions": ["Zit of lig met je been gestrekt, een opgerold handdoekje onder je knie.", "Duw je knie in de handdoek door je dijspier aan te spannen.", "Houd vast, ontspan en herhaal."],
+      "attention_points": ["Je hiel mag licht van de grond komen.", "Houd je adem niet in.", "Je moet de spier boven je knieschijf zien en voelen aanspannen."]
+    },
+    "en": {
+      "name": "Quad set",
+      "description": "Activates the thigh muscle, often used after knee surgery.",
+      "instructions": ["Sit or lie with your leg straight and a rolled towel under your knee.", "Press your knee into the towel by tightening your thigh muscle.", "Hold, relax and repeat."],
+      "attention_points": ["Your heel may lift slightly off the floor.", "Don't hold your breath.", "You should see and feel the muscle above your kneecap tighten."]
+    }
+  },
+  {
+    "id": "heel-slide",
+    "kind": "reps",
+    "body_parts": ["knee", "hip"],
+    "muscles": ["hamstrings", "quadriceps"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_rest_sec": 30,
+    "nl": {
+      "name": "Hiel schuiven",
+      "description": "Verbetert de buiging van de knie.",
+      "instructions": ["Lig op je rug met gestrekte benen.", "Schuif je hiel langzaam naar je bil zodat je knie buigt.", "Schuif terug tot je been weer gestrekt is."],
+      "attention_points": ["Ga tot een lichte rek, niet tot pijn.", "Houd je hiel in contact met de ondergrond (een sok op een gladde vloer helpt).", "Laat je knie recht naar boven wijzen."]
+    },
+    "en": {
+      "name": "Heel slide",
+      "description": "Improves knee bending (flexion).",
+      "instructions": ["Lie on your back with your legs straight.", "Slowly slide your heel towards your buttock so your knee bends.", "Slide back until your leg is straight again."],
+      "attention_points": ["Go to a gentle stretch, not into pain.", "Keep your heel in contact with the surface (a sock on a smooth floor helps).", "Keep your knee pointing straight up."]
+    }
+  },
+  {
+    "id": "straight-leg-raise",
+    "kind": "reps",
+    "body_parts": ["knee", "hip"],
+    "muscles": ["quadriceps", "hip flexors"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 10, "default_rest_sec": 30,
+    "nl": {
+      "name": "Gestrekt been heffen",
+      "description": "Versterkt dijspier en heupbuigers zonder de knie te belasten.",
+      "instructions": ["Lig op je rug, één knie gebogen, het andere been gestrekt.", "Span de dijspier van het gestrekte been aan en trek je tenen naar je toe.", "Til het been op tot de hoogte van je andere knie en laat langzaam zakken."],
+      "attention_points": ["Houd de knie volledig gestrekt tijdens de hele beweging.", "Duw je onderrug licht in de grond.", "Laat het been traag zakken, niet laten vallen."]
+    },
+    "en": {
+      "name": "Straight leg raise",
+      "description": "Strengthens the thigh and hip flexors without loading the knee.",
+      "instructions": ["Lie on your back, one knee bent, the other leg straight.", "Tighten the thigh of the straight leg and pull your toes towards you.", "Lift the leg to the height of your other knee and lower slowly."],
+      "attention_points": ["Keep the knee fully straight throughout.", "Gently press your lower back into the floor.", "Lower the leg slowly; don't let it drop."]
+    }
+  },
+  {
+    "id": "wall-sit",
+    "kind": "time",
+    "body_parts": ["knee", "hip"],
+    "muscles": ["quadriceps", "glutes"],
+    "equipment": "wall",
+    "level": "intermediate",
+    "default_sets": 3, "default_hold_sec": 30, "default_rest_sec": 45,
+    "nl": {
+      "name": "Muurzit",
+      "description": "Statische versterking van de dijspieren.",
+      "instructions": ["Sta met je rug tegen een muur, voeten een halve meter van de muur.", "Glijd naar beneden tot je knieën ongeveer 60–90° gebogen zijn.", "Houd deze positie vast."],
+      "attention_points": ["Je knieën blijven boven je enkels, niet voorbij je tenen.", "Ga niet dieper dan je kine heeft aangegeven.", "Blijf rustig doorademen."]
+    },
+    "en": {
+      "name": "Wall sit",
+      "description": "Static strengthening of the thigh muscles.",
+      "instructions": ["Stand with your back against a wall, feet about half a metre from the wall.", "Slide down until your knees are bent about 60–90°.", "Hold this position."],
+      "attention_points": ["Keep your knees above your ankles, not past your toes.", "Don't go deeper than your physio advised.", "Keep breathing calmly."]
+    }
+  },
+  {
+    "id": "calf-raise",
+    "kind": "reps",
+    "body_parts": ["ankle_foot"],
+    "muscles": ["calves"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 15, "default_rest_sec": 30,
+    "nl": {
+      "name": "Op de tenen staan",
+      "description": "Versterkt de kuitspieren en verbetert de enkelstabiliteit.",
+      "instructions": ["Sta rechtop, eventueel met een hand tegen de muur voor evenwicht.", "Kom langzaam op je tenen.", "Zak gecontroleerd terug."],
+      "attention_points": ["Verdeel het gewicht over je grote en kleine teen; niet naar buiten kantelen.", "Zak trager dan je omhoog komt.", "Moeilijker maken: op één been."]
+    },
+    "en": {
+      "name": "Calf raise",
+      "description": "Strengthens the calf muscles and improves ankle stability.",
+      "instructions": ["Stand upright, a hand on the wall for balance if needed.", "Slowly rise onto your toes.", "Lower back down with control."],
+      "attention_points": ["Spread your weight over your big and little toe; don't roll outwards.", "Lower more slowly than you rise.", "To progress: do it on one leg."]
+    }
+  },
+  {
+    "id": "ankle-alphabet",
+    "kind": "reps",
+    "body_parts": ["ankle_foot"],
+    "muscles": ["tibialis anterior", "calves"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 1, "default_rest_sec": 15,
+    "nl": {
+      "name": "Alfabet met de enkel",
+      "description": "Verbetert de beweeglijkheid van de enkel.",
+      "instructions": ["Zit met je been gestrekt of je voet in de lucht.", "Schrijf met je grote teen het alfabet in de lucht.", "Eén herhaling = het volledige alfabet."],
+      "attention_points": ["Beweeg enkel vanuit de enkel, niet vanuit de knie of heup.", "Maak de letters zo groot mogelijk zonder pijn."]
+    },
+    "en": {
+      "name": "Ankle alphabet",
+      "description": "Improves ankle mobility.",
+      "instructions": ["Sit with your leg straight or your foot in the air.", "Trace the alphabet in the air with your big toe.", "One repetition = the whole alphabet."],
+      "attention_points": ["Move only from the ankle, not from the knee or hip.", "Make the letters as big as possible without pain."]
+    }
+  },
+  {
+    "id": "single-leg-balance",
+    "kind": "time",
+    "body_parts": ["ankle_foot", "knee", "hip"],
+    "muscles": ["calves", "glutes"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_hold_sec": 30, "default_rest_sec": 15,
+    "nl": {
+      "name": "Evenwicht op één been",
+      "description": "Traint evenwicht en stabiliteit van enkel en knie.",
+      "instructions": ["Sta naast een stoel of aanrecht.", "Til één voet van de grond.", "Houd je evenwicht zo lang als aangegeven."],
+      "attention_points": ["Houd je standknie licht gebogen, niet op slot.", "Kijk naar een vast punt voor je.", "Moeilijker maken: ogen dicht of op een kussen staan."]
+    },
+    "en": {
+      "name": "Single leg balance",
+      "description": "Trains balance and ankle/knee stability.",
+      "instructions": ["Stand next to a chair or counter.", "Lift one foot off the floor.", "Keep your balance for the prescribed time."],
+      "attention_points": ["Keep your standing knee slightly bent, not locked.", "Focus on a fixed point in front of you.", "To progress: close your eyes or stand on a cushion."]
+    }
+  },
+  {
+    "id": "pendulum",
+    "kind": "time",
+    "body_parts": ["shoulder"],
+    "muscles": ["deltoid", "rotator cuff"],
+    "equipment": "table",
+    "level": "beginner",
+    "default_sets": 2, "default_hold_sec": 30, "default_rest_sec": 15,
+    "nl": {
+      "name": "Slingeroefening schouder",
+      "description": "Zachte mobilisatie van de schouder, vaak na een blessure of operatie.",
+      "instructions": ["Leun voorover met je goede hand op een tafel.", "Laat je pijnlijke arm ontspannen naar beneden hangen.", "Maak met je lichaam kleine cirkels zodat de arm passief meeslingert."],
+      "attention_points": ["De arm hangt volledig ontspannen; de beweging komt uit je romp.", "Kleine cirkels zijn voldoende.", "Wissel na de helft van de tijd van richting."]
+    },
+    "en": {
+      "name": "Shoulder pendulum",
+      "description": "Gentle shoulder mobilisation, often after injury or surgery.",
+      "instructions": ["Lean forward with your good hand on a table.", "Let your painful arm hang down relaxed.", "Make small circles with your body so the arm swings passively."],
+      "attention_points": ["The arm stays completely relaxed; the movement comes from your trunk.", "Small circles are enough.", "Change direction halfway through."]
+    }
+  },
+  {
+    "id": "wall-slide",
+    "kind": "reps",
+    "body_parts": ["shoulder"],
+    "muscles": ["deltoid", "serratus anterior"],
+    "equipment": "wall",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_rest_sec": 30,
+    "nl": {
+      "name": "Arm langs de muur omhoog schuiven",
+      "description": "Verbetert het heffen van de arm.",
+      "instructions": ["Sta met je gezicht naar de muur, onderarmen of vingers tegen de muur.", "Schuif je arm(en) zo ver mogelijk omhoog.", "Schuif rustig terug naar beneden."],
+      "attention_points": ["Trek je schouders niet op naar je oren.", "Ga tot een lichte rek, niet tot scherpe pijn.", "Houd je rug recht, geen holle rug."]
+    },
+    "en": {
+      "name": "Wall slide",
+      "description": "Improves lifting the arm.",
+      "instructions": ["Stand facing the wall, forearms or fingers against it.", "Slide your arm(s) up as far as you can.", "Slowly slide back down."],
+      "attention_points": ["Don't shrug your shoulders towards your ears.", "Go to a gentle stretch, not sharp pain.", "Keep your back straight; don't arch."]
+    }
+  },
+  {
+    "id": "band-external-rotation",
+    "kind": "reps",
+    "body_parts": ["shoulder"],
+    "muscles": ["infraspinatus", "teres minor"],
+    "equipment": "resistance band",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 12, "default_rest_sec": 30,
+    "nl": {
+      "name": "Buitenwaartse rotatie met elastiek",
+      "description": "Versterkt de rotator cuff van de schouder.",
+      "instructions": ["Houd een elastiek vast met beide handen, ellebogen 90° gebogen tegen je zij.", "Draai je onderarm(en) naar buiten tegen de weerstand van het elastiek.", "Keer langzaam terug."],
+      "attention_points": ["Houd je elleboog tegen je lichaam (een opgerold handdoekje helpt).", "Pols recht houden.", "Schouderbladen licht naar achter en naar beneden."]
+    },
+    "en": {
+      "name": "Band external rotation",
+      "description": "Strengthens the shoulder rotator cuff.",
+      "instructions": ["Hold a band with both hands, elbows bent 90° at your sides.", "Rotate your forearm(s) outwards against the band's resistance.", "Return slowly."],
+      "attention_points": ["Keep your elbow against your body (a rolled towel helps).", "Keep your wrist straight.", "Shoulder blades slightly back and down."]
+    }
+  },
+  {
+    "id": "scapular-squeeze",
+    "kind": "time",
+    "body_parts": ["upper_back", "shoulder"],
+    "muscles": ["rhomboids", "trapezius"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_hold_sec": 5, "default_rest_sec": 15,
+    "nl": {
+      "name": "Schouderbladen samenknijpen",
+      "description": "Verbetert de houding en activeert de bovenrugspieren.",
+      "instructions": ["Zit of sta rechtop met je armen langs je lichaam.", "Trek je schouderbladen naar achter en naar beneden, naar elkaar toe.", "Houd vast en ontspan."],
+      "attention_points": ["Trek je schouders niet op.", "Steek je kin niet naar voren.", "Geen holle rug maken."]
+    },
+    "en": {
+      "name": "Scapular squeeze",
+      "description": "Improves posture and activates the upper back muscles.",
+      "instructions": ["Sit or stand upright with your arms by your sides.", "Pull your shoulder blades back and down, towards each other.", "Hold and relax."],
+      "attention_points": ["Don't shrug your shoulders.", "Don't poke your chin forward.", "Don't arch your back."]
+    }
+  },
+  {
+    "id": "chin-tuck",
+    "kind": "time",
+    "body_parts": ["neck"],
+    "muscles": ["deep neck flexors"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_hold_sec": 5, "default_rest_sec": 15,
+    "nl": {
+      "name": "Kin intrekken",
+      "description": "Versterkt de diepe nekspieren en verbetert de houding.",
+      "instructions": ["Zit rechtop en kijk recht vooruit.", "Schuif je hoofd naar achter alsof je een dubbele kin maakt.", "Houd vast en ontspan."],
+      "attention_points": ["Kantel je hoofd niet naar beneden; het is een horizontale beweging.", "Je blik blijft recht vooruit.", "Je voelt een lichte rek achteraan in je nek."]
+    },
+    "en": {
+      "name": "Chin tuck",
+      "description": "Strengthens the deep neck muscles and improves posture.",
+      "instructions": ["Sit upright and look straight ahead.", "Glide your head backwards as if making a double chin.", "Hold and relax."],
+      "attention_points": ["Don't tilt your head down; it's a horizontal movement.", "Keep looking straight ahead.", "You should feel a gentle stretch at the back of your neck."]
+    }
+  },
+  {
+    "id": "cat-camel",
+    "kind": "reps",
+    "body_parts": ["lower_back", "upper_back"],
+    "muscles": ["erector spinae"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_rest_sec": 15,
+    "nl": {
+      "name": "Bolle en holle rug (kat-koe)",
+      "description": "Mobiliseert de wervelkolom.",
+      "instructions": ["Ga op handen en knieën zitten, handen onder je schouders, knieën onder je heupen.", "Maak je rug bol en laat je hoofd zakken.", "Maak daarna je rug hol en kijk licht omhoog."],
+      "attention_points": ["Beweeg traag en vloeiend, wervel per wervel.", "Blijf binnen een pijnvrij bereik.", "Adem uit bij de bolle rug, in bij de holle rug."]
+    },
+    "en": {
+      "name": "Cat-camel",
+      "description": "Mobilises the spine.",
+      "instructions": ["Get on hands and knees, hands under shoulders, knees under hips.", "Round your back and let your head drop.", "Then arch your back and look slightly up."],
+      "attention_points": ["Move slowly and smoothly, vertebra by vertebra.", "Stay within a pain-free range.", "Breathe out when rounding, in when arching."]
+    }
+  },
+  {
+    "id": "bird-dog",
+    "kind": "reps",
+    "body_parts": ["core", "lower_back", "hip"],
+    "muscles": ["erector spinae", "glutes", "abdominals"],
+    "equipment": "body only",
+    "level": "intermediate",
+    "default_sets": 3, "default_reps": 8, "default_rest_sec": 30,
+    "nl": {
+      "name": "Bird dog",
+      "description": "Traint rompstabiliteit en coördinatie.",
+      "instructions": ["Ga op handen en knieën zitten.", "Strek tegelijk je rechterarm naar voren en je linkerbeen naar achter.", "Houd 2 seconden vast, keer terug en wissel van kant."],
+      "attention_points": ["Houd je rug recht als een tafelblad; niet hol en niet draaien.", "Til je been niet hoger dan je heup.", "Span je buik licht aan."]
+    },
+    "en": {
+      "name": "Bird dog",
+      "description": "Trains core stability and coordination.",
+      "instructions": ["Get on hands and knees.", "Extend your right arm forward and your left leg back at the same time.", "Hold for 2 seconds, return and switch sides."],
+      "attention_points": ["Keep your back flat like a tabletop; don't arch or rotate.", "Don't lift your leg higher than your hip.", "Gently brace your abdomen."]
+    }
+  },
+  {
+    "id": "pelvic-tilt",
+    "kind": "reps",
+    "body_parts": ["lower_back", "core"],
+    "muscles": ["abdominals"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 2, "default_reps": 10, "default_rest_sec": 15,
+    "nl": {
+      "name": "Bekken kantelen",
+      "description": "Leert de onderrug en buikspieren bewust aansturen.",
+      "instructions": ["Lig op je rug met gebogen knieën.", "Duw je onderrug plat tegen de grond door je bekken te kantelen.", "Ontspan en laat je onderrug terug een klein holletje maken."],
+      "attention_points": ["De beweging is klein en komt uit het bekken.", "Gebruik je billen niet om te duwen.", "Blijf normaal doorademen."]
+    },
+    "en": {
+      "name": "Pelvic tilt",
+      "description": "Teaches conscious control of the lower back and abdominal muscles.",
+      "instructions": ["Lie on your back with your knees bent.", "Flatten your lower back against the floor by tilting your pelvis.", "Relax and let your lower back return to a small arch."],
+      "attention_points": ["The movement is small and comes from the pelvis.", "Don't use your buttocks to push.", "Keep breathing normally."]
+    }
+  },
+  {
+    "id": "plank-knees",
+    "kind": "time",
+    "body_parts": ["core"],
+    "muscles": ["abdominals", "transversus abdominis"],
+    "equipment": "body only",
+    "level": "beginner",
+    "default_sets": 3, "default_hold_sec": 20, "default_rest_sec": 30,
+    "nl": {
+      "name": "Plank op de knieën",
+      "description": "Versterkt de rompspieren.",
+      "instructions": ["Steun op je onderarmen en knieën.", "Breng je heupen omhoog tot je lichaam een rechte lijn vormt van hoofd tot knieën.", "Houd deze positie vast."],
+      "attention_points": ["Laat je heupen niet doorzakken en steek je billen niet omhoog.", "Ellebogen recht onder je schouders.", "Blijf rustig doorademen."]
+    },
+    "en": {
+      "name": "Kneeling plank",
+      "description": "Strengthens the core muscles.",
+      "instructions": ["Support yourself on your forearms and knees.", "Lift your hips until your body forms a straight line from head to knees.", "Hold this position."],
+      "attention_points": ["Don't let your hips sag or stick your buttocks up.", "Elbows directly under your shoulders.", "Keep breathing calmly."]
+    }
+  },
+  {
+    "id": "hamstring-stretch",
+    "kind": "time",
+    "body_parts": ["knee", "hip"],
+    "muscles": ["hamstrings"],
+    "equipment": "towel",
+    "level": "beginner",
+    "default_sets": 3, "default_hold_sec": 30, "default_rest_sec": 15,
+    "nl": {
+      "name": "Rekken achterkant dij",
+      "description": "Rekt de hamstrings.",
+      "instructions": ["Lig op je rug en leg een handdoek rond je voet.", "Trek je gestrekte been met de handdoek omhoog tot je een rek voelt achteraan je dij.", "Houd vast."],
+      "attention_points": ["Houd de knie (bijna) gestrekt.", "Rek mag voelbaar zijn, maar nooit pijnlijk.", "Niet verenen; houd de rek rustig aan."]
+    },
+    "en": {
+      "name": "Hamstring stretch",
+      "description": "Stretches the hamstrings.",
+      "instructions": ["Lie on your back and loop a towel around your foot.", "Pull your straight leg up with the towel until you feel a stretch at the back of your thigh.", "Hold."],
+      "attention_points": ["Keep the knee (almost) straight.", "The stretch should be noticeable but never painful.", "Don't bounce; hold the stretch steadily."]
+    }
+  },
+  {
+    "id": "sit-to-stand",
+    "kind": "reps",
+    "body_parts": ["knee", "hip", "full_body"],
+    "muscles": ["quadriceps", "glutes"],
+    "equipment": "chair",
+    "level": "beginner",
+    "default_sets": 3, "default_reps": 10, "default_rest_sec": 45,
+    "nl": {
+      "name": "Opstaan uit een stoel",
+      "description": "Functionele oefening voor benen en evenwicht.",
+      "instructions": ["Zit op het voorste deel van een stevige stoel, voeten op heupbreedte.", "Leun licht voorover en sta op zonder je handen te gebruiken.", "Ga gecontroleerd terug zitten."],
+      "attention_points": ["Knieën in lijn met je tenen; niet naar binnen laten vallen.", "Ga traag zitten, niet neerploffen.", "Te zwaar? Gebruik een hogere stoel of je handen."]
+    },
+    "en": {
+      "name": "Sit to stand",
+      "description": "Functional exercise for the legs and balance.",
+      "instructions": ["Sit on the front of a sturdy chair, feet hip-width apart.", "Lean slightly forward and stand up without using your hands.", "Sit back down with control."],
+      "attention_points": ["Knees in line with your toes; don't let them collapse inwards.", "Sit down slowly; don't drop.", "Too hard? Use a higher chair or your hands."]
+    }
+  }
+]

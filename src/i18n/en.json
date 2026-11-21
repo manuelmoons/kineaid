@@ -1,0 +1,71 @@
+{
+  "app": {
+    "tagline": "Your physio exercises, always at hand.",
+    "loading": "Loading…",
+    "signOut": "Sign out",
+    "credits": "Credits",
+    "language": "Language"
+  },
+  "setup": {
+    "title": "Supabase is not configured yet",
+    "body": "Copy .env.example to .env and fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY. See README.md."
+  },
+  "login": {
+    "title": "Sign in",
+    "email": "Email address",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "magicLink": "Email me a sign-in link",
+    "magicLinkSent": "Check your inbox: we sent you a sign-in link.",
+    "signUpSent": "Check your inbox to confirm your email address.",
+    "google": "Continue with Google",
+    "or": "or",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "invitedBy": "You were invited by {{name}}. Sign in or create an account to continue."
+  },
+  "onboarding": {
+    "title": "Welcome to KineAid",
+    "question": "How do you want to use KineAid?",
+    "patient": "I'm a patient",
+    "patientHelp": "Ask your physio for the link or QR code, or enter the code below.",
+    "inviteCode": "Invite code",
+    "join": "Connect",
+    "skip": "Later, I want to pick exercises myself first",
+    "kine": "I'm a physiotherapist",
+    "practiceName": "Name of your practice",
+    "createPractice": "Create practice"
+  },
+  "join": {
+    "joining": "Connecting…",
+    "success": "You are now connected to {{name}}.",
+    "invalid": "This invite code is invalid or has expired."
+  },
+  "patient": {
+    "today": "Today",
+    "myKine": "My physio",
+    "noProgram": "You don't have an exercise program yet. Your physio can set one up for you.",
+    "comingSoon": "The workout player arrives in the next phase."
+  },
+  "kine": {
+    "dashboard": "Dashboard",
+    "invite": "Invite patients",
+    "inviteHelp": "Let your patient scan this QR code or share the link.",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "newCode": "New code",
+    "patients": "Patients",
+    "noPatients": "No patients connected yet."
+  },
+  "credits": {
+    "title": "Credits and licenses",
+    "intro": "KineAid uses exercises from open databases. Thanks to all creators and contributors!",
+    "kineaid": "Own set of rehabilitation exercises, written for KineAid.",
+    "fedb": "Open exercise database in JSON format with photos, released into the public domain.",
+    "wger": "Open source fitness app and exercise database. Texts and images are under Creative Commons licenses; the author and license are shown with each exercise.",
+    "custom": "Exercises your physiotherapist adds remain the property of the physiotherapist.",
+    "license": "License",
+    "disclaimer": "KineAid does not replace professional advice. Only do exercises as prescribed by your physiotherapist and stop if it hurts."
+  }
+}

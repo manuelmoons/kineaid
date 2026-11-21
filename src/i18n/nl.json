@@ -1,0 +1,71 @@
+{
+  "app": {
+    "tagline": "Je kine-oefeningen, altijd bij de hand.",
+    "loading": "Laden…",
+    "signOut": "Afmelden",
+    "credits": "Bronnen",
+    "language": "Taal"
+  },
+  "setup": {
+    "title": "Supabase is nog niet ingesteld",
+    "body": "Kopieer .env.example naar .env en vul VITE_SUPABASE_URL en VITE_SUPABASE_ANON_KEY in. Zie README.md."
+  },
+  "login": {
+    "title": "Aanmelden",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "signIn": "Aanmelden",
+    "signUp": "Account aanmaken",
+    "magicLink": "Stuur mij een aanmeldlink",
+    "magicLinkSent": "Check je mailbox: we hebben je een aanmeldlink gestuurd.",
+    "signUpSent": "Check je mailbox om je e-mailadres te bevestigen.",
+    "google": "Verder met Google",
+    "or": "of",
+    "noAccount": "Nog geen account?",
+    "haveAccount": "Al een account?",
+    "invitedBy": "Je bent uitgenodigd door {{name}}. Meld je aan of maak een account om verder te gaan."
+  },
+  "onboarding": {
+    "title": "Welkom bij KineAid",
+    "question": "Hoe wil je KineAid gebruiken?",
+    "patient": "Ik ben patiënt",
+    "patientHelp": "Vraag je kine om de link of QR-code, of vul de code hieronder in.",
+    "inviteCode": "Uitnodigingscode",
+    "join": "Koppelen",
+    "skip": "Later, ik wil eerst zelf oefeningen kiezen",
+    "kine": "Ik ben kinesitherapeut",
+    "practiceName": "Naam van je praktijk",
+    "createPractice": "Praktijk aanmaken"
+  },
+  "join": {
+    "joining": "Bezig met koppelen…",
+    "success": "Je bent gekoppeld aan {{name}}.",
+    "invalid": "Deze uitnodigingscode is ongeldig of verlopen."
+  },
+  "patient": {
+    "today": "Vandaag",
+    "myKine": "Mijn kine",
+    "noProgram": "Je hebt nog geen oefenprogramma. Je kine kan er een voor je klaarzetten.",
+    "comingSoon": "De workout-speler komt in de volgende fase."
+  },
+  "kine": {
+    "dashboard": "Dashboard",
+    "invite": "Patiënten uitnodigen",
+    "inviteHelp": "Laat je patiënt deze QR-code scannen of deel de link.",
+    "copyLink": "Link kopiëren",
+    "copied": "Gekopieerd!",
+    "newCode": "Nieuwe code",
+    "patients": "Patiënten",
+    "noPatients": "Nog geen patiënten gekoppeld."
+  },
+  "credits": {
+    "title": "Bronnen en licenties",
+    "intro": "KineAid gebruikt oefeningen uit open databanken. Bedankt aan alle makers en bijdragers!",
+    "kineaid": "Eigen oefeningenset voor revalidatie, geschreven voor KineAid.",
+    "fedb": "Open oefeningendatabank in JSON-formaat met foto's, vrijgegeven in het publieke domein.",
+    "wger": "Open source fitness-app en oefeningendatabank. Teksten en afbeeldingen vallen onder Creative Commons-licenties; de auteur en licentie staan bij elke oefening.",
+    "custom": "Oefeningen die je kinesitherapeut zelf toevoegt, blijven eigendom van de kinesitherapeut.",
+    "license": "Licentie",
+    "disclaimer": "KineAid vervangt geen professioneel advies. Doe oefeningen enkel zoals je kinesitherapeut ze heeft voorgeschreven en stop bij pijn."
+  }
+}
