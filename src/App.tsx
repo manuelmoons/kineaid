@@ -10,6 +10,11 @@ import Join from './pages/Join';
 import PatientHome from './pages/PatientHome';
 import KineHome from './pages/KineHome';
 import Credits from './pages/Credits';
+import Library from './pages/Library';
+import ExerciseDetail from './pages/ExerciseDetail';
+import ProgramEditor from './pages/ProgramEditor';
+import Workout from './pages/Workout';
+import KinePatient from './pages/KinePatient';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -56,6 +61,11 @@ export default function App() {
           <Route path="/welcome" element={<RequireAuth><Onboarding /></RequireAuth>} />
           <Route path="/patient" element={<RequireAuth><PatientHome /></RequireAuth>} />
           <Route path="/kine" element={<RequireAuth><KineHome /></RequireAuth>} />
+          <Route path="/kine/patients/:patientId" element={<RequireAuth><KinePatient /></RequireAuth>} />
+          <Route path="/library" element={<RequireAuth><Library /></RequireAuth>} />
+          <Route path="/exercise/:id" element={<RequireAuth><ExerciseDetail /></RequireAuth>} />
+          <Route path="/programs/:id" element={<RequireAuth><ProgramEditor /></RequireAuth>} />
+          <Route path="/workout/:id" element={<RequireAuth><Workout /></RequireAuth>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}

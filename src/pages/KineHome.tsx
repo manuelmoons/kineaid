@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '../lib/auth';
@@ -110,12 +110,14 @@ export default function KineHome() {
         ) : (
           <ul className="divide-y divide-slate-100">
             {patients.map((p) => (
-              <li key={p.patient_id} className="flex items-center justify-between gap-3 py-2">
+              <li key={p.patient_id}>
+                <Link to={`/kine/patients/${p.patient_id}`} className="-mx-2 flex items-center justify-between gap-3 rounded-lg px-2 py-2 hover:bg-slate-50">
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{p.name ?? p.email ?? '—'}</span>
                   {p.name && p.email && <span className="block truncate text-sm text-slate-500">{p.email}</span>}
                 </span>
-                <span className="text-sm text-slate-500">{new Date(p.created_at).toLocaleDateString()}</span>
+                <span className="shrink-0 text-sm text-slate-500">{new Date(p.created_at).toLocaleDateString()} ›</span>
+                </Link>
               </li>
             ))}
           </ul>
