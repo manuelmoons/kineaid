@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth';
@@ -17,6 +17,12 @@ import {
   type TranslationDraft,
 } from '../lib/exerciseEdit';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { PUPPET_EXERCISES } from '../puppet/exercises';
+import kineaidExercises from '../../scripts/data/kineaid-exercises.json';
+
+const PuppetViewer = lazy(() => import('../puppet/PuppetViewer'));
+/** KineAid exercises with an animation, as starting points for a new puppet. */
+const PUPPET_CHOICES = (kineaidExercises as { id: string; nl: { name: string }; en: { name: string } }[]).filter((e) => PUPPET_EXERCISES[e.id]);
 
 /**
  * Create, edit or copy an exercise of the logged-in kine.
@@ -294,6 +300,41 @@ export default function ExerciseEditor() {
             </select>
           </Field>
         </div>
+      </section>
+
+      {/* 3D puppet */}
+      <section className="card space-y-3">
+        <p className="text-sm font-medium text-slate-700">{t('editor.puppet')}</p>
+        {draft.puppet ? (
+          <div className="aspect-video overflow-hidden rounded-xl bg-slate-100">
+            <Suspense fallback={null}>
+              <PuppetViewer exercise={draft.puppet} />
+            </Suspense>
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">{t('editor.puppetNone')}</p>
+        )}
+        <div className="flex flex-wrap gap-2">
+          <select
+            className="input flex-1"
+            value=""
+            onChange={(e) => e.target.value && set({ puppet: PUPPET_EXERCISES[e.target.value] })}
+            aria-label={t('editor.puppetFrom')}
+          >
+            <option value="">{t('editor.puppetFrom')}</option>
+            {PUPPET_CHOICES.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c[normalizeLang(i18n.resolvedLanguage)].name}
+              </option>
+            ))}
+          </select>
+          {draft.puppet && (
+            <button type="button" className="btn-secondary text-red-600" onClick={() => set({ puppet: null })}>
+              {t('editor.puppetRemove')}
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-slate-500">{t('editor.puppetHint')}</p>
       </section>
 
       {/* Photos & video */}

@@ -17,6 +17,7 @@ import 'dotenv/config';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createClient } from '@supabase/supabase-js';
 import { mapToBodyParts, type BodyPart } from '../src/lib/bodyParts.ts';
+import { PUPPET_EXERCISES } from '../src/puppet/exercises.ts';
 
 type Locale = 'nl' | 'en';
 
@@ -45,6 +46,8 @@ interface ImportExercise {
   default_rest_sec: number;
   translations: Partial<Record<Locale, Translation>>;
   images: { url: string; license: string; author: string }[];
+  /** 3D puppet animation (only KineAid's own exercises have one for now). */
+  puppet?: unknown;
 }
 
 const args = process.argv.slice(2);
@@ -75,6 +78,7 @@ async function loadKineAid(): Promise<ImportExercise[]> {
     default_rest_sec: e.default_rest_sec ?? 30,
     translations: { nl: e.nl, en: e.en },
     images: [],
+    puppet: PUPPET_EXERCISES[e.id] ?? null,
   }));
 }
 

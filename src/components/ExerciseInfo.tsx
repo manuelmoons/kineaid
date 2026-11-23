@@ -2,7 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeLang, pickTranslation, SOURCE_LABELS, type Exercise } from '../lib/exercises';
 import ExerciseThumb from './ExerciseThumb';
-import { puppetFor } from '../puppet/exercises';
+import { puppetOf } from '../puppet/exercises';
 
 const PuppetViewer = lazy(() => import('../puppet/PuppetViewer'));
 
@@ -24,7 +24,7 @@ export default function ExerciseInfo({
   const [imgIndex, setImgIndex] = useState(0);
   const source = SOURCE_LABELS[exercise.source];
   const translatedFallback = tr && tr.locale !== lang;
-  const puppet = puppetFor(exercise.source, exercise.source_id);
+  const puppet = puppetOf(exercise);
 
   return (
     <div className="space-y-4">

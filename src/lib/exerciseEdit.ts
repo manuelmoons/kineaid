@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import type { BodyPart } from './bodyParts';
 import { SOURCE_LABELS, type Exercise, type ExerciseKind, type Lang } from './exercises';
+import { puppetOf, type PuppetExercise } from '../puppet/exercises';
 
 const BUCKET = 'exercise-images';
 export const LANGS: Lang[] = ['nl', 'en'];
@@ -40,6 +41,7 @@ export interface ExerciseDraft {
   author: string | null;
   translations: Record<Lang, TranslationDraft>;
   images: ImageDraft[];
+  puppet: PuppetExercise | null;
 }
 
 const emptyTranslation = (): TranslationDraft => ({ name: '', description: '', instructions: '', attention_points: '' });
@@ -61,6 +63,7 @@ export function emptyDraft(): ExerciseDraft {
     author: null,
     translations: { nl: emptyTranslation(), en: emptyTranslation() },
     images: [],
+    puppet: null,
   };
 }
 
@@ -94,6 +97,8 @@ export function draftFrom(ex: Exercise, copy: boolean): ExerciseDraft {
     default_hold_sec: ex.default_hold_sec,
     default_rest_sec: ex.default_rest_sec,
     video_url: ex.video_url ?? '',
+    // A copy of a KineAid exercise takes its animation along.
+    puppet: puppetOf(ex),
     source_url: copy && !ex.owner_id ? ex.source_url || source?.url || null : ex.source_url,
     license: ex.license,
     author: copy && !ex.owner_id ? ex.author || source?.name || ex.source : ex.author,
@@ -155,6 +160,7 @@ export async function saveExercise(ownerId: string, draft: ExerciseDraft, id?: s
     default_hold_sec: draft.kind === 'time' ? draft.default_hold_sec : null,
     default_rest_sec: draft.default_rest_sec,
     video_url: draft.video_url.trim() || null,
+    puppet: draft.puppet,
     source_url: draft.source_url,
     license: draft.license,
     author: draft.author,

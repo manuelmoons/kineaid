@@ -406,7 +406,22 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
   },
 };
 
-export function puppetFor(source: string, sourceId: string | null | undefined): PuppetExercise | null {
-  if (source !== 'kineaid' || !sourceId) return null;
-  return PUPPET_EXERCISES[sourceId] ?? null;
+/** Minimal shape check for puppet data coming from the database. */
+export function isPuppetExercise(v: unknown): v is PuppetExercise {
+  const p = v as PuppetExercise | null;
+  return (
+    !!p &&
+    typeof p === 'object' &&
+    p.base in BASES &&
+    Array.isArray(p.keyframes) &&
+    p.keyframes.length > 0 &&
+    p.keyframes.every((k) => k && typeof k.pose === 'object')
+  );
+}
+
+/** The puppet to show for an exercise: its own (database) animation, else the built-in one of a KineAid exercise. */
+export function puppetOf(ex: { puppet?: unknown; source: string; source_id?: string | null }): PuppetExercise | null {
+  if (isPuppetExercise(ex.puppet)) return ex.puppet;
+  if (ex.source !== 'kineaid' || !ex.source_id) return null;
+  return PUPPET_EXERCISES[ex.source_id] ?? null;
 }

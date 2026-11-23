@@ -255,6 +255,11 @@
     "errVideo": "The video link must start with http:// or https://.",
     "photoEarlier": "Move photo earlier",
     "photoLater": "Move photo later",
-    "unsaved": "Unsaved changes: click Save to keep them."
+    "unsaved": "Unsaved changes: click Save to keep them.",
+    "puppet": "3D puppet",
+    "puppetNone": "This exercise has no 3D puppet yet. Patients then see the photos or an icon.",
+    "puppetFrom": "Take the animation of a KineAid exercise…",
+    "puppetRemove": "Remove puppet",
+    "puppetHint": "Posing the puppet yourself comes in a next version (puppet editor)."
   }
 }

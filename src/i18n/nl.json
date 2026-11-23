@@ -255,6 +255,11 @@
     "errVideo": "De videolink moet beginnen met http:// of https://.",
     "photoEarlier": "Foto naar voren",
     "photoLater": "Foto naar achteren",
-    "unsaved": "Niet-opgeslagen wijzigingen: klik op Opslaan om ze te bewaren."
+    "unsaved": "Niet-opgeslagen wijzigingen: klik op Opslaan om ze te bewaren.",
+    "puppet": "3D-pop",
+    "puppetNone": "Deze oefening heeft nog geen 3D-pop. Patiënten zien dan de foto's of een pictogram.",
+    "puppetFrom": "Animatie overnemen van een KineAid-oefening…",
+    "puppetRemove": "Pop verwijderen",
+    "puppetHint": "Zelf de pop in positie zetten komt in een volgende versie (pop-editor)."
   }
 }

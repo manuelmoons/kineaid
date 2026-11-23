@@ -12,12 +12,12 @@ import KineHome from './pages/KineHome';
 import Credits from './pages/Credits';
 import Library from './pages/Library';
 import ExerciseDetail from './pages/ExerciseDetail';
-import ExerciseEditor from './pages/ExerciseEditor';
 import ProgramEditor from './pages/ProgramEditor';
 import Workout from './pages/Workout';
 import KinePatient from './pages/KinePatient';
 
 const PuppetDemo = lazy(() => import('./pages/PuppetDemo'));
+const ExerciseEditor = lazy(() => import('./pages/ExerciseEditor'));
 const puppetRoute = <Route path="/puppet" element={<Suspense fallback={null}><PuppetDemo /></Suspense>} />;
 
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -69,8 +69,8 @@ export default function App() {
           <Route path="/kine" element={<RequireAuth><KineHome /></RequireAuth>} />
           <Route path="/kine/patients/:patientId" element={<RequireAuth><KinePatient /></RequireAuth>} />
           <Route path="/library" element={<RequireAuth><Library /></RequireAuth>} />
-          <Route path="/exercise/new" element={<RequireAuth><ExerciseEditor /></RequireAuth>} />
-          <Route path="/exercise/:id/edit" element={<RequireAuth><ExerciseEditor /></RequireAuth>} />
+          <Route path="/exercise/new" element={<RequireAuth><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireAuth>} />
+          <Route path="/exercise/:id/edit" element={<RequireAuth><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireAuth>} />
           <Route path="/exercise/:id" element={<RequireAuth><ExerciseDetail /></RequireAuth>} />
           <Route path="/programs/:id" element={<RequireAuth><ProgramEditor /></RequireAuth>} />
           <Route path="/workout/:id" element={<RequireAuth><Workout /></RequireAuth>} />

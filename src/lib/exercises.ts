@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import type { BodyPart } from './bodyParts';
+import type { PuppetExercise } from '../puppet/exercises';
 
 export type Lang = 'nl' | 'en';
 export type ExerciseKind = 'reps' | 'time';
@@ -52,6 +53,8 @@ export interface Exercise {
   license: string | null;
   author: string | null;
   owner_id: string | null;
+  /** 3D puppet animation (null = none; photos or a body-part icon are shown instead). */
+  puppet: PuppetExercise | null;
   exercise_translations: ExerciseTranslation[];
   exercise_images: ExerciseImage[];
 }
@@ -100,7 +103,7 @@ export async function searchExercises(opts: {
 }
 
 export const EXERCISE_DETAIL_SELECT =
-  'id, kind, per_side, body_parts, muscles, equipment, level, default_sets, default_reps, default_hold_sec, default_rest_sec, video_url, source, source_id, source_url, license, author, owner_id, exercise_translations(locale, name, description, instructions, attention_points), exercise_images(id, url, storage_path, position, license, author)';
+  'id, kind, per_side, body_parts, muscles, equipment, level, default_sets, default_reps, default_hold_sec, default_rest_sec, video_url, source, source_id, source_url, license, author, owner_id, puppet, exercise_translations(locale, name, description, instructions, attention_points), exercise_images(id, url, storage_path, position, license, author)';
 
 export async function getExercise(id: string): Promise<Exercise> {
   const { data, error } = await supabase
