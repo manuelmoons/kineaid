@@ -1,7 +1,18 @@
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+export default function Modal({
+  title,
+  onClose,
+  children,
+  closeOnBackdrop = true,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  /** False for dialogs with work in progress, so a stray tap outside does not throw it away. */
+  closeOnBackdrop?: boolean;
+}) {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -16,7 +27,7 @@ export default function Modal({ title, onClose, children }: { title: string; onC
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 sm:items-center sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 sm:items-center sm:p-4" onClick={closeOnBackdrop ? onClose : undefined}>
       <div
         role="dialog"
         aria-modal="true"

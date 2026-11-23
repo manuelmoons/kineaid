@@ -96,8 +96,16 @@ export interface Rig {
   dispose(): void;
 }
 
-export const BODY_COLOR = 0xe8dcc8;
-export const JOINT_COLOR = 0xc9b79c;
+/** Colours of the figure: skin, clothes (T-shirt, shorts, shoes) and hair. */
+export const COLORS = {
+  skin: 0xdcae8c,
+  shirt: 0x4f7ca8,
+  shorts: 0x334155,
+  shoe: 0xf1f5f9,
+  sole: 0x94a3b8,
+  hair: 0x4b3621,
+} as const;
+type ColorKind = keyof typeof COLORS;
 export const HIGHLIGHT_COLOR = 0x14b8a6;
 
 export function createRig(): Rig {
@@ -123,36 +131,30 @@ export function createRig(): Rig {
     points[name] = o;
   }
 
-  const bodyMat = new THREE.MeshStandardMaterial({ color: BODY_COLOR, roughness: 0.65, metalness: 0 });
-  const jointMat = new THREE.MeshStandardMaterial({ color: JOINT_COLOR, roughness: 0.6, metalness: 0 });
   const geos: THREE.BufferGeometry[] = [];
-  const sphere = new THREE.SphereGeometry(1, 20, 14);
+  const sphere = new THREE.SphereGeometry(1, 24, 16);
   geos.push(sphere);
   const segments = {} as Record<SegmentName, THREE.Mesh[]>;
   const bodyMeshes: THREE.Mesh[] = [];
-  const segMaterial = new Map<SegmentName, THREE.MeshStandardMaterial>();
-
-  const matFor = (seg: SegmentName | null, isJoint: boolean): THREE.MeshStandardMaterial => {
-    if (!seg) return isJoint ? jointMat : bodyMat;
-    let m = segMaterial.get(seg);
+  // One material per (segment, colour), so a highlighted segment can glow while keeping its own base colour.
+  const materials = new Map<string, { mat: THREE.MeshStandardMaterial; seg: SegmentName | null; base: THREE.Color }>();
+  const matFor = (seg: SegmentName | null, kind: ColorKind) => {
+    const key = `${seg ?? '-'}|${kind}`;
+    let m = materials.get(key);
     if (!m) {
-      m = bodyMat.clone();
-      segMaterial.set(seg, m);
+      const base = new THREE.Color(COLORS[kind]);
+      const rough = kind === 'shoe' || kind === 'sole' ? 0.5 : kind === 'hair' ? 0.9 : 0.7;
+      m = { mat: new THREE.MeshStandardMaterial({ color: base.clone(), roughness: rough, metalness: 0 }), seg, base };
+      materials.set(key, m);
     }
-    return m;
+    return m.mat;
   };
 
-  const add = (
-    parent: JointName,
-    geo: THREE.BufferGeometry,
-    pos: Vec3,
-    scale: Vec3,
-    seg: SegmentName | null,
-    isJoint = false,
-  ) => {
-    const mesh = new THREE.Mesh(geo, matFor(seg, isJoint));
+  const add = (parent: JointName, geo: THREE.BufferGeometry, pos: Vec3, scale: Vec3, seg: SegmentName | null, kind: ColorKind, rot?: Vec3) => {
+    const mesh = new THREE.Mesh(geo, matFor(seg, kind));
     mesh.position.set(...pos);
     mesh.scale.set(...scale);
+    if (rot) mesh.rotation.set(rot[0], rot[1], rot[2]);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     joints[parent].add(mesh);
@@ -161,37 +163,71 @@ export function createRig(): Rig {
     return mesh;
   };
   const capsule = (radius: number, length: number) => {
-    const g = new THREE.CapsuleGeometry(radius, length, 6, 14);
+    const g = new THREE.CapsuleGeometry(radius, length, 6, 16);
     geos.push(g);
     return g;
   };
+  /** Tapered limb piece hanging down from its joint, from y = -top to y = -top - length. */
+  const limb = (parent: JointName, rTop: number, rBottom: number, top: number, length: number, seg: SegmentName, kind: ColorKind) => {
+    const g = new THREE.CylinderGeometry(rTop, rBottom, length, 18, 1);
+    geos.push(g);
+    add(parent, g, [0, -top - length / 2, 0], [1, 1, 1], seg, kind);
+  };
+  const ball = (parent: JointName, r: number, kind: ColorKind, seg: SegmentName | null = null) => add(parent, sphere, [0, 0, 0], [r, r, r], seg, kind);
 
-  // Torso
-  add('pelvis', sphere, [0, -0.01, 0], [0.165, 0.11, 0.11], 'pelvis');
-  add('spine', capsule(0.115, 0.06), [0, 0.08, 0], [1, 1, 0.78], 'abdomen');
-  add('chest', sphere, [0, 0.15, -0.005], [0.165, 0.2, 0.115], 'chest');
-  add('neck', capsule(0.045, 0.05), [0, 0.03, 0], [1, 1, 1], 'neck');
-  add('head', sphere, [0, 0.1, 0.01], [0.092, 0.118, 0.105], 'head');
-  // Nose: shows which way the head faces.
-  add('head', sphere, [0, 0.09, 0.11], [0.018, 0.026, 0.022], 'head');
+  // ── Trunk ──
+  add('pelvis', sphere, [0, -0.01, 0], [0.165, 0.115, 0.115], 'pelvis', 'shorts');
+  for (const x of [-0.068, 0.068]) add('pelvis', sphere, [x, -0.045, -0.045], [0.085, 0.09, 0.08], 'pelvis', 'shorts'); // buttocks
+  add('spine', capsule(0.11, 0.07), [0, 0.08, 0], [1, 1, 0.78], 'abdomen', 'shirt');
+  add('chest', sphere, [0, 0.14, -0.005], [0.16, 0.2, 0.115], 'chest', 'shirt');
+  add('chest', sphere, [0, 0.235, -0.012], [0.19, 0.075, 0.1], 'chest', 'shirt'); // shoulder line
+  // ── Neck & head ──
+  const neckGeo = new THREE.CylinderGeometry(0.044, 0.05, 0.1, 16);
+  geos.push(neckGeo);
+  add('neck', neckGeo, [0, 0.03, 0], [1, 1, 1], 'neck', 'skin');
+  add('head', sphere, [0, 0.1, 0.005], [0.088, 0.11, 0.1], 'head', 'skin'); // skull
+  add('head', sphere, [0, 0.045, 0.035], [0.066, 0.055, 0.07], 'head', 'skin'); // jaw
+  add('head', sphere, [0, 0.085, 0.1], [0.014, 0.022, 0.02], 'head', 'skin'); // nose: shows which way the head faces
+  for (const x of [-0.087, 0.087]) add('head', sphere, [x, 0.085, 0], [0.014, 0.026, 0.02], 'head', 'skin'); // ears
+  add('head', sphere, [0, 0.125, -0.015], [0.094, 0.098, 0.1], 'head', 'hair');
 
   for (const p of ['l', 'r'] as const) {
-    add(`${p}_shoulder`, sphere, [0, 0, 0], [0.056, 0.056, 0.056], null, true);
-    add(`${p}_shoulder`, capsule(0.046, 0.2), [0, -0.145, 0], [1, 1, 1], `${p}_upperarm`);
-    add(`${p}_elbow`, sphere, [0, 0, 0], [0.041, 0.041, 0.041], null, true);
-    add(`${p}_elbow`, capsule(0.038, 0.18), [0, -0.13, 0], [1, 1, 1], `${p}_forearm`);
-    add(`${p}_wrist`, sphere, [0, -0.07, 0], [0.026, 0.078, 0.045], `${p}_hand`);
-    add(`${p}_hip`, sphere, [0, 0, 0], [0.074, 0.074, 0.074], null, true);
-    add(`${p}_hip`, capsule(0.068, 0.3), [0, -0.215, 0], [1, 1, 1], `${p}_thigh`);
-    add(`${p}_knee`, sphere, [0, 0, 0], [0.054, 0.054, 0.054], null, true);
-    add(`${p}_knee`, capsule(0.052, 0.32), [0, -0.21, 0], [1, 1, 1], `${p}_shin`);
-    add(`${p}_ankle`, sphere, [0, 0, 0], [0.04, 0.04, 0.04], null, true);
-    add(`${p}_ankle`, sphere, [0, -0.045, 0.055], [0.046, 0.035, 0.125], `${p}_foot`);
+    const s = p === 'l' ? 1 : -1; // +1: the figure's left is +X
+    // ── Arm: short sleeve, then skin ──
+    ball(`${p}_shoulder`, 0.058, 'shirt', `${p}_upperarm`);
+    limb(`${p}_shoulder`, 0.053, 0.048, 0, 0.11, `${p}_upperarm`, 'shirt');
+    limb(`${p}_shoulder`, 0.045, 0.037, 0.11, 0.18, `${p}_upperarm`, 'skin');
+    ball(`${p}_elbow`, 0.039, 'skin');
+    limb(`${p}_elbow`, 0.041, 0.029, 0, 0.26, `${p}_forearm`, 'skin');
+    // ── Hand: palm, four fingers, thumb (palm faces the body when the arm hangs) ──
+    add(`${p}_wrist`, sphere, [0, -0.048, 0], [0.019, 0.05, 0.043], `${p}_hand`, 'skin');
+    const fingers: [number, number][] = [
+      [0.026, 0.044],
+      [0.009, 0.05],
+      [-0.009, 0.047],
+      [-0.025, 0.038],
+    ];
+    for (const [z, len] of fingers) {
+      add(`${p}_wrist`, capsule(0.0085, len - 0.017), [-0.004 * s, -0.092 - len / 2, z], [1, 1, 1], `${p}_hand`, 'skin', [0, 0, 0.12 * s]);
+    }
+    add(`${p}_wrist`, capsule(0.0105, 0.03), [-0.012 * s, -0.055, 0.045], [1, 1, 1], `${p}_hand`, 'skin', [-0.55, 0, 0.25 * s]);
+    // ── Leg: shorts, then skin with a calf, shoe ──
+    ball(`${p}_hip`, 0.074, 'shorts', `${p}_thigh`);
+    limb(`${p}_hip`, 0.075, 0.07, 0, 0.2, `${p}_thigh`, 'shorts');
+    limb(`${p}_hip`, 0.067, 0.051, 0.2, 0.23, `${p}_thigh`, 'skin');
+    ball(`${p}_knee`, 0.053, 'skin');
+    limb(`${p}_knee`, 0.05, 0.034, 0, 0.42, `${p}_shin`, 'skin');
+    add(`${p}_knee`, sphere, [0, -0.13, -0.022], [0.05, 0.1, 0.05], `${p}_shin`, 'skin'); // calf
+    ball(`${p}_ankle`, 0.038, 'skin');
+    add(`${p}_ankle`, sphere, [0, -0.048, 0.055], [0.048, 0.032, 0.122], `${p}_foot`, 'shoe');
+    add(`${p}_ankle`, sphere, [0, -0.045, -0.02], [0.042, 0.037, 0.05], `${p}_foot`, 'shoe'); // heel
+    const sole = new THREE.BoxGeometry(0.088, 0.012, 0.25);
+    geos.push(sole);
+    add(`${p}_ankle`, sole, [0, -0.074, 0.048], [1, 1, 1], `${p}_foot`, 'sole');
   }
 
   let highlighted: SegmentName[] = [];
   const hlColor = new THREE.Color(HIGHLIGHT_COLOR);
-  const baseColor = new THREE.Color(BODY_COLOR);
 
   return {
     root,
@@ -209,27 +245,24 @@ export function createRig(): Rig {
     },
     setHighlight(segs) {
       highlighted = segs;
-      for (const [seg, m] of segMaterial) {
-        if (!segs.includes(seg)) {
-          m.color.copy(baseColor);
-          m.emissive.setRGB(0, 0, 0);
-        }
+      for (const m of materials.values()) {
+        if (m.seg && segs.includes(m.seg)) continue;
+        m.mat.color.copy(m.base);
+        m.mat.emissive.setRGB(0, 0, 0);
       }
     },
     tick(t) {
-      const k = 0.55 + 0.25 * Math.sin(t * 3);
-      for (const seg of highlighted) {
-        const m = segMaterial.get(seg);
-        if (!m) continue;
-        m.color.copy(baseColor).lerp(hlColor, k);
-        m.emissive.copy(hlColor).multiplyScalar(0.12 * k);
+      if (!highlighted.length) return;
+      const k = 0.5 + 0.25 * Math.sin(t * 3);
+      for (const m of materials.values()) {
+        if (!m.seg || !highlighted.includes(m.seg)) continue;
+        m.mat.color.copy(m.base).lerp(hlColor, k);
+        m.mat.emissive.copy(hlColor).multiplyScalar(0.12 * k);
       }
     },
     dispose() {
       geos.forEach((g) => g.dispose());
-      bodyMat.dispose();
-      jointMat.dispose();
-      segMaterial.forEach((m) => m.dispose());
+      materials.forEach((m) => m.mat.dispose());
     },
   };
 }

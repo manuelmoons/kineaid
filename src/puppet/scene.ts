@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { createRig, lerpPose, mirrorName, mirrorPose, type PointName, type Pose, type Rig, type SegmentName, type Vec3 } from './rig';
+import { createRig, HIGHLIGHT_COLOR, lerpPose, mirrorName, mirrorPose, type JointName, type PointName, type Pose, type Rig, type SegmentName, type Vec3 } from './rig';
 import { BASES, type Prop, type PropPlacement, type PuppetExercise } from './exercises';
+import { controlsFor } from './controls';
 
 type Side = 'left' | 'right';
 
@@ -13,6 +14,10 @@ interface PreparedSide {
   total: number;
   anchor: PointName[];
   anchorRef: THREE.Vector3;
+  /** Joints whose body parts carry the weight (from the anchor); null = the whole body (lying down). */
+  contactJoints: Set<JointName> | null;
+  /** Per keyframe: how far the contact parts sit above the lowest body point (see applyPose). */
+  contactGap: number[];
   floorY: number;
   props: THREE.Group;
   straps: { mesh: THREE.Mesh; from: PointName; to: PointName }[];
@@ -20,6 +25,21 @@ interface PreparedSide {
 }
 
 const FLOOR_COLOR = 0xe6ecf1;
+/** Joints that can be posed by dragging their body part (the pelvis = whole body uses sliders). */
+const DRAGGABLE = new Set<JointName>(['spine', 'chest', 'neck', 'head', 'l_shoulder', 'l_elbow', 'l_wrist', 'r_shoulder', 'r_elbow', 'r_wrist', 'l_hip', 'l_knee', 'l_ankle', 'r_hip', 'r_knee', 'r_ankle']);
+/** How far a moving limb may dip below the floor before the whole body is lifted (m). */
+const FLOOR_TOLERANCE = 0.04;
+/** The joints carrying the body parts at an anchor point (foot points → ankle, knee → knee, …). */
+function contactJointsFor(anchor: PointName[]): Set<JointName> | null {
+  if (anchor.includes('pelvis')) return null;
+  const map: Partial<Record<PointName, JointName>> = {
+    l_sole: 'l_ankle', l_toe: 'l_ankle', l_heel: 'l_ankle', r_sole: 'r_ankle', r_toe: 'r_ankle', r_heel: 'r_ankle',
+    l_hand: 'l_wrist', r_hand: 'r_wrist',
+  };
+  return new Set(anchor.map((p) => map[p] ?? (p as JointName)));
+}
+/** Joints whose body part points up from the joint (the others hang down). */
+const UP_BONES = new Set<JointName>(['spine', 'chest', 'neck', 'head']);
 const PROP_COLOR = 0xb08d6a;
 const WALL_COLOR = 0xdbe2e8;
 const MAT_COLOR = 0x5eead4;
@@ -41,7 +61,14 @@ export class PuppetScene {
   private disposables: { dispose(): void }[] = [];
   private homeCam = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
   private currentSide: Side | null = null;
+  /** Keyframe shown without animating (editor), or null to play. */
+  private frozen: number | null = null;
+  private marker: THREE.Mesh;
   onSideChange?: (side: Side | null) => void;
+  /** Called with the joint of the body part that was tapped (when set). */
+  onPick?: (joint: JointName) => void;
+  /** Called while a body part is dragged, with the joint's new rotation (degrees). Only while a frame is frozen. */
+  onDrag?: (joint: JointName, rotation: Vec3) => void;
 
   constructor(private container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -82,12 +109,56 @@ export class PuppetScene {
     this.controls.minDistance = 0.8;
     this.controls.maxDistance = 7;
 
+    // Marker on the selected joint (editor), drawn on top of the body.
+    const markerGeo = new THREE.SphereGeometry(0.038, 16, 12);
+    const markerMat = new THREE.MeshBasicMaterial({ color: HIGHLIGHT_COLOR, depthTest: false, transparent: true, opacity: 0.9 });
+    this.marker = new THREE.Mesh(markerGeo, markerMat);
+    this.marker.renderOrder = 999;
+    this.marker.visible = false;
+    this.disposables.push(markerGeo, markerMat);
+
+    // Tap on the body → onPick(joint). Drag a body part → onDrag(joint, rotation): the joint turns
+    // so the part follows the finger (thigh → hip, shin → knee, upper arm → shoulder, …).
+    // Capture phase, so this runs before OrbitControls and can stop it from rotating the view.
+    let down: { x: number; y: number; joint: JointName | null; id: number } | null = null;
+    let dragging = false;
+    const el = this.renderer.domElement;
+    el.addEventListener(
+      'pointerdown',
+      (e) => {
+        const joint = this.onPick || this.onDrag ? this.pick(e.clientX, e.clientY) : null;
+        down = { x: e.clientX, y: e.clientY, joint, id: e.pointerId };
+        dragging = false;
+        if (joint && this.onDrag && this.frozen !== null && DRAGGABLE.has(joint)) {
+          this.controls.enabled = false;
+          el.setPointerCapture(e.pointerId);
+        }
+      },
+      { capture: true },
+    );
+    el.addEventListener('pointermove', (e) => {
+      if (!down || this.controls.enabled || !down.joint || e.pointerId !== down.id) return;
+      if (!dragging && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 5) return;
+      dragging = true;
+      const rot = this.dragRotation(down.joint, e.clientX, e.clientY);
+      if (rot) this.onDrag?.(down.joint, rot);
+    });
+    const end = (e: PointerEvent) => {
+      if (!down || e.pointerId !== down.id) return;
+      if (!dragging && down.joint && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 6) this.onPick?.(down.joint);
+      down = null;
+      dragging = false;
+      this.controls.enabled = true;
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+
     this.resizeObs = new ResizeObserver(() => this.resize());
     this.resizeObs.observe(container);
     this.resize();
   }
 
-  setExercise(ex: PuppetExercise, side: Side | null) {
+  setExercise(ex: PuppetExercise, side: Side | null, opts: { keepCamera?: boolean } = {}) {
     for (const s of this.sides) {
       this.scene.remove(s.props);
       disposeTree(s.props);
@@ -97,8 +168,102 @@ export class PuppetScene {
     this.sides = list.map((s) => this.prepare(ex, s));
     this.sides.forEach((s) => this.scene.add(s.props));
     this.currentSide = null;
-    this.frameCamera(ex, side === 'right');
-    this.start = performance.now();
+    // While editing, keep the viewer's camera and the animation clock.
+    if (!opts.keepCamera) {
+      this.frameCamera(ex, side === 'right');
+      this.start = performance.now();
+    }
+  }
+
+  /** Show keyframe i still (for editing), or null to play the animation. */
+  freeze(i: number | null) {
+    if (i === null && this.frozen !== null) this.start = performance.now();
+    this.frozen = i;
+  }
+
+  /** Put a marker on a joint (null = none). */
+  setSelected(joint: JointName | null) {
+    this.marker.removeFromParent();
+    this.marker.visible = !!joint;
+    if (joint) this.rig.joints[joint].add(this.marker);
+  }
+
+  /** Current camera direction and distance, in the units of PuppetExercise.view. */
+  getView(): { az: number; el: number; dist: number } {
+    const d = this.camera.position.clone().sub(this.controls.target);
+    const dist = d.length();
+    const r = (x: number) => Math.round((x * 180) / Math.PI);
+    return { az: (r(Math.atan2(d.x, d.z)) + 360) % 360, el: r(Math.asin(d.y / dist)), dist: Math.round(dist * 100) / 100 };
+  }
+
+  /**
+   * The props with body-relative placements turned into fixed positions (for the left side;
+   * the right side mirrors them). After this, changing a pose no longer moves a wall or chair.
+   */
+  pinProps(ex: PuppetExercise): Prop[] {
+    const s = this.prepare(ex, 'left');
+    disposeTree(s.props);
+    const r = (x: number) => Math.round(x * 1000) / 1000;
+    return (ex.props ?? []).map((p) => {
+      if (p.type === 'mat' || p.type === 'strap' || !p.at) return p;
+      const pos = this.placementPos(s, p);
+      const { at: _at, frame: _frame, ...rest } = p;
+      return { ...rest, offset: [r(pos.x), r(pos.y), r(pos.z)] } as Prop;
+    });
+  }
+
+  /** Rotation that turns the joint so its body part points at the pointer (within the joint's limits). */
+  private dragRotation(joint: JointName, clientX: number, clientY: number): Vec3 | null {
+    const obj = this.rig.joints[joint];
+    const parent = obj.parent;
+    if (!parent) return null;
+    // Pointer → point on a plane through the joint, facing the camera.
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(ndc, this.camera);
+    const jointPos = obj.getWorldPosition(new THREE.Vector3());
+    const normal = this.camera.getWorldDirection(new THREE.Vector3());
+    const target = ray.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(normal, jointPos), new THREE.Vector3());
+    if (!target) return null;
+    const dir = target.sub(jointPos);
+    if (dir.lengthSq() < 1e-6) return null;
+    // Wanted bone direction, in the parent's frame.
+    const d = dir.normalize().applyQuaternion(parent.getWorldQuaternion(new THREE.Quaternion()).invert());
+    const deg = THREE.MathUtils.radToDeg;
+    const prev: Vec3 = [deg(obj.rotation.x), deg(obj.rotation.y), deg(obj.rotation.z)];
+    let next: Vec3;
+    if (joint.endsWith('knee') || joint.endsWith('elbow')) {
+      // Hinge: bone (0,-1,0) turned by θ about X → (0, -cos θ, -sin θ)
+      next = [deg(Math.atan2(-d.z, -d.y)), 0, 0];
+    } else if (joint.endsWith('ankle') || joint.endsWith('wrist')) {
+      // Foot points (0,0,1): turned by θ about X → (0, -sin θ, cos θ). Hand hangs like a hinge.
+      next = joint.endsWith('ankle') ? [deg(Math.atan2(-d.y, d.z)), prev[1], 0] : [deg(Math.atan2(-d.z, -d.y)), 0, 0];
+    } else {
+      // Ball joint: swing the current bone direction onto the wanted one, keeping its twist.
+      const bone = UP_BONES.has(joint) ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(0, -1, 0);
+      const cur = bone.applyQuaternion(obj.quaternion);
+      const q = new THREE.Quaternion().setFromUnitVectors(cur, d).multiply(obj.quaternion);
+      const e = new THREE.Euler().setFromQuaternion(q, obj.rotation.order);
+      next = [deg(e.x), deg(e.y), deg(e.z)];
+    }
+    // Keep within the editor's limits; axes without a slider stay as they were.
+    const out: Vec3 = [...prev];
+    for (const c of controlsFor(joint)) {
+      const a = c.min * c.sign;
+      const b = c.max * c.sign;
+      out[c.axis] = Math.round(Math.max(Math.min(a, b), Math.min(Math.max(a, b), next[c.axis])));
+    }
+    return out;
+  }
+
+  private pick(clientX: number, clientY: number): JointName | null {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(ndc, this.camera);
+    const hit = ray.intersectObjects(this.rig.bodyMeshes, false)[0];
+    return (hit?.object.parent?.name as JointName) || null;
   }
 
   resetView() {
@@ -180,15 +345,15 @@ export class PuppetScene {
       total,
       anchor: (ex.anchor ?? ['pelvis']).map(m),
       anchorRef: new THREE.Vector3(),
+      contactJoints: contactJointsFor((ex.contact ?? ex.anchor ?? ['pelvis']).map(m)),
+      contactGap: [],
       floorY: hasMat ? 0.012 : 0,
       props: new THREE.Group(),
       straps: [],
       highlight: (ex.highlight ?? []).map(m),
     };
-    // Reference position of the anchor: frame 0 with the pelvis at the origin.
-    this.applyPose(prepared, frames[0], false);
-    prepared.anchorRef.copy(this.anchorPos(prepared.anchor));
-    prepared.anchorRef.y = 0;
+    // The anchor (e.g. the feet) always stands at the origin, so fixed props stay put when poses change.
+    prepared.contactGap = frames.map((f) => this.measureContactGap(prepared, f));
 
     for (const prop of ex.props ?? []) {
       const p = mirror ? mirrorProp(prop) : prop;
@@ -206,14 +371,38 @@ export class PuppetScene {
     return prepared;
   }
 
-  /** Pose the rig, put its lowest point on the floor and keep the anchor in place. */
-  private applyPose(s: PreparedSide, pose: Pose, anchored = true) {
+  /** Lowest point of the whole body and of the anchored (weight-bearing) parts, for the current rig pose. */
+  private lowPoints(s: PreparedSide): { all: number; contact: number } {
+    const all = new THREE.Box3();
+    const contact = new THREE.Box3();
+    for (const mesh of this.rig.bodyMeshes) {
+      all.expandByObject(mesh, true);
+      if (!s.contactJoints || s.contactJoints.has(mesh.parent?.name as JointName)) contact.expandByObject(mesh, true);
+    }
+    return { all: all.min.y, contact: contact.min.y };
+  }
+
+  private measureContactGap(s: PreparedSide, pose: Pose): number {
+    this.rig.setPose(pose);
+    this.rig.root.updateMatrixWorld(true);
+    const low = this.lowPoints(s);
+    return low.contact - low.all;
+  }
+
+  /**
+   * Pose the rig, put it on the floor and keep the anchor in place.
+   * Keyframes (no contactGap): the lowest body point touches the floor.
+   * In between (contactGap given, interpolated between the keyframes): the weight-bearing parts
+   * (e.g. the standing foot) decide the height, so a limb swinging low cannot lift the whole body;
+   * only if something would sink deeper than FLOOR_TOLERANCE does the body rise.
+   */
+  private applyPose(s: PreparedSide, pose: Pose, anchored = true, contactGap?: number) {
     this.rig.setPose(pose);
     const pelvis = this.rig.joints.pelvis;
     this.rig.root.updateMatrixWorld(true);
-    const box = new THREE.Box3();
-    for (const mesh of this.rig.bodyMeshes) box.expandByObject(mesh, true);
-    pelvis.position.y += s.floorY - box.min.y;
+    const low = this.lowPoints(s);
+    const lowest = contactGap === undefined ? low.all : Math.min(low.contact - contactGap, low.all + FLOOR_TOLERANCE);
+    pelvis.position.y += s.floorY - lowest;
     if (anchored) {
       this.rig.root.updateMatrixWorld(true);
       const a = this.anchorPos(s.anchor);
@@ -290,6 +479,22 @@ export class PuppetScene {
 
   private render(time: number) {
     if (!this.sides.length) return;
+    if (this.frozen !== null) {
+      const s = this.sides[0];
+      if (this.currentSide !== s.side) {
+        this.currentSide = s.side;
+        this.sides.forEach((x) => (x.props.visible = x === s));
+        this.rig.setHighlight(s.highlight);
+      }
+      this.applyPose(s, s.frames[Math.min(this.frozen, s.frames.length - 1)]);
+      for (const st of s.straps) {
+        updateStrap(st.mesh, this.rig.points[st.from].getWorldPosition(new THREE.Vector3()), this.rig.points[st.to].getWorldPosition(new THREE.Vector3()));
+      }
+      this.rig.tick(time);
+      this.controls.update();
+      this.renderer.render(this.scene, this.camera);
+      return;
+    }
     const cycle = Math.floor(time / this.sides[0].total);
     const s = this.sides[cycle % this.sides.length];
     if (this.sides.length > 1 && s.side !== this.currentSide) {
@@ -305,15 +510,21 @@ export class PuppetScene {
 
     let t = time - cycle * s.total;
     let pose = s.frames[0];
+    let gap: number | undefined;
     for (const seg of s.segments) {
       if (t <= seg.dur || seg === s.segments[s.segments.length - 1]) {
         const k = seg.dur > 0 ? Math.min(1, t / seg.dur) : 1;
-        pose = seg.from === seg.to ? s.frames[seg.from] : lerpPose(s.frames[seg.from], s.frames[seg.to], this.ease(k));
+        if (seg.from === seg.to) pose = s.frames[seg.from];
+        else {
+          const e = this.ease(k);
+          pose = lerpPose(s.frames[seg.from], s.frames[seg.to], e);
+          gap = s.contactGap[seg.from] + (s.contactGap[seg.to] - s.contactGap[seg.from]) * e;
+        }
         break;
       }
       t -= seg.dur;
     }
-    this.applyPose(s, pose);
+    this.applyPose(s, pose, true, gap);
     for (const st of s.straps) {
       updateStrap(st.mesh, this.rig.points[st.from].getWorldPosition(new THREE.Vector3()), this.rig.points[st.to].getWorldPosition(new THREE.Vector3()));
     }
@@ -366,7 +577,11 @@ function buildProp(p: Exclude<Prop, { type: 'mat' } | { type: 'strap' }>, pos: T
     local.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
     g.position.set(pos.x - local.x, 0, pos.z - local.z);
   } else if (p.type === 'wall') {
-    g.add(box(2.6, 2.3, 0.1, 0, 1.15, -0.05, material(WALL_COLOR)));
+    // One-sided: seen from behind (camera on the other side) the wall is invisible and never hides the puppet.
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.3), new THREE.MeshStandardMaterial({ color: WALL_COLOR, roughness: 0.9, side: THREE.FrontSide }));
+    wall.position.set(0, 1.15, 0);
+    wall.receiveShadow = true;
+    g.add(wall);
     g.position.set(pos.x, 0, pos.z);
   } else if (p.type === 'table') {
     const mat = material(PROP_COLOR);

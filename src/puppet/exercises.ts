@@ -37,6 +37,8 @@ export interface PuppetExercise {
   keyframes: Keyframe[];
   /** Body points that stay in place horizontally (default: pelvis). Use LEFT names; they are mirrored for the right side. */
   anchor?: PointName[];
+  /** Body points that carry the weight, when not the same as the anchor (e.g. forearms and knees in a plank). */
+  contact?: PointName[];
   props?: Prop[];
   /** Camera direction: azimuth (0 = in front of a standing figure, 90 = at its left side) and elevation, in degrees. */
   view?: { az: number; el: number; dist?: number; focus?: PointName };
@@ -80,7 +82,7 @@ export const BASES: Record<BaseName, Pose> = {
     r_shoulder: [-90, 0, 0],
     r_elbow: [-70, 0, 0],
   },
-  quadruped: { pelvis: [80, 0, 0], ...legs(-80, 90, 75, 3), ...arms(-80, 0, 4), l_wrist: [90, 0, 0], r_wrist: [90, 0, 0], neck: [8, 0, 0] },
+  quadruped: { pelvis: [80, 0, 0], ...legs(-80, 90, 75, 3), ...arms(-80, 0, 4), l_wrist: [-90, -90, 0], r_wrist: [-90, 90, 0], neck: [8, 0, 0] },
   seated: { ...legs(-90, 90, 0, 4), ...arms(-20, -55, 10) },
   forearmKneeling: { pelvis: [105, 0, 0], ...legs(-105, 90, 40, 3), ...arms(-105, -90, 8), neck: [-15, 0, 0] },
 };
@@ -160,13 +162,22 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
   'wall-sit': {
     base: 'standing',
     keyframes: [
-      { pose: { pelvis: [-10, 0, 0], ...legs(-12, 0, 22, 3) }, move: 2, hold: 1 },
-      { pose: { ...legs(-82, 82, 0, 3) }, move: 2, hold: 4 },
+      // Back and head resting against the wall, feet forward. The in-between positions let the back
+      // slide down along the wall instead of through it (solved numerically).
+      { pose: { pelvis: [-8, 0, 0], ...legs(-18, 0, 26, 3), neck: [12, 0, 0] }, move: 0.6, hold: 1 },
+      { pose: { pelvis: [-10, 0, 0], ...legs(-30, 30, 10, 3), neck: [14, 0, 0] }, move: 0.5 },
+      { pose: { pelvis: [-5, 0, 0], ...legs(-50, 50, 5, 3), neck: [6, 0, 0] }, move: 0.5 },
+      { pose: { pelvis: [-2, 0, 0], ...legs(-68, 68, 2, 3), neck: [2, 0, 0] }, move: 0.5 },
+      { pose: { ...legs(-82, 82, 0, 3) }, move: 0.5, hold: 4 },
+      { pose: { pelvis: [-2, 0, 0], ...legs(-68, 68, 2, 3), neck: [2, 0, 0] }, move: 0.5 },
+      { pose: { pelvis: [-5, 0, 0], ...legs(-50, 50, 5, 3), neck: [6, 0, 0] }, move: 0.5 },
+      { pose: { pelvis: [-10, 0, 0], ...legs(-30, 30, 10, 3), neck: [14, 0, 0] }, move: 0.5 },
     ],
     anchor: SOLES,
-    props: [{ type: 'wall', at: 'chest', frame: 1, offset: [0, 0, -0.13] }],
+    props: [{ type: 'wall', at: 'chest', frame: 4, offset: [0, 0, -0.13] }],
     view: { az: 90, el: 10 },
     highlight: ['l_thigh', 'r_thigh'],
+    ease: 'linear',
   },
 
   'calf-raise': {
@@ -182,9 +193,9 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
 
   'ankle-alphabet': {
     base: 'seated',
-    keyframes: circle(8, (c, s) => ({ l_hip: [-80, 0, 4], l_knee: [10, 0, 0], l_ankle: [10 + 25 * c, 25 * s, 0] }), 0.35),
+    keyframes: circle(8, (c, s) => ({ l_hip: [-95, 0, 4], l_knee: [25, 0, 0], l_ankle: [10 + 25 * c, 25 * s, 0] }), 0.35),
     anchor: ['pelvis'],
-    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.12, 0.08] }],
+    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.135, 0.08] }],
     view: { az: 55, el: 20 },
     highlight: ['l_foot'],
     ease: 'linear',
@@ -193,11 +204,14 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
   'single-leg-balance': {
     base: 'standing',
     keyframes: [
-      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0] }, move: 1.2, hold: 0.8 },
-      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0], l_hip: [-25, 0, 2], l_knee: [70, 0, 0], l_ankle: [10, 0, 0] }, move: 1, hold: 3 },
+      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0] }, move: 0.6, hold: 0.8 },
+      // In-between step (knee first, toes slightly up) so the lifting foot does not scrape through the floor.
+      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0], l_hip: [-20, 0, 2], l_knee: [30, 0, 0], l_ankle: [-5, 0, 0] }, move: 0.5 },
+      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0], l_hip: [-25, 0, 2], l_knee: [70, 0, 0], l_ankle: [0, 0, 0] }, move: 0.6, hold: 3 },
+      { pose: { r_shoulder: [0, 0, -25], r_elbow: [-10, 0, 0], l_hip: [-20, 0, 2], l_knee: [30, 0, 0], l_ankle: [-5, 0, 0] }, move: 0.6 },
     ],
     anchor: ['r_sole'],
-    props: [{ type: 'chair', ref: 'back', at: 'r_hand', frame: 0, offset: [-0.02, -0.03, 0], rotY: -90 }],
+    props: [{ type: 'chair', ref: 'back', at: 'r_hand', frame: 0, offset: [-0.02, -0.065, 0], rotY: -90 }],
     view: { az: 30, el: 12 },
     highlight: ['r_thigh', 'r_shin', 'r_foot'],
   },
@@ -216,11 +230,13 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
         l_elbow: [0, 0, 0],
         r_shoulder: [-55, 0, -5],
         r_elbow: [-15, 0, 0],
+        r_wrist: [-90, 90, 0], // palm flat on the table, fingers forward
       }),
       0.4,
     ),
     anchor: SOLES,
-    props: [{ type: 'table', at: 'r_hand', frame: 0, offset: [-0.1, -0.02, 0.1] }],
+    // Table top exactly under the palm (measured: palm surface is 2.9 cm below the hand point).
+    props: [{ type: 'table', at: 'r_hand', frame: 0, offset: [-0.25, -0.029, 0.1] }],
     view: { az: 55, el: 15 },
     highlight: ['l_upperarm'],
     ease: 'linear',
@@ -229,13 +245,22 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
   'wall-slide': {
     base: 'standing',
     keyframes: [
-      { pose: { ...arms(-90, -90, 15) }, move: 1.5, hold: 0.5 },
-      { pose: { pelvis: [8, 0, 0], ...legs(-8, 0, 0, 2), ...arms(-150, -15, 15) }, move: 1.5, hold: 0.5 },
+      // The in-between positions keep the forearms sliding along the wall, never through it
+      // (solved numerically: elbow bend and a slight lean for each arm height).
+      { pose: { ...arms(-90, -90, 15) }, move: 0.45, hold: 0.6 },
+      { pose: { pelvis: [1, 0, 0], ...legs(-1, 0, 0, 2), ...arms(-110, -70, 15) }, move: 0.4 },
+      { pose: { pelvis: [5, 0, 0], ...legs(-5, 0, 0, 2), ...arms(-130, -54, 15) }, move: 0.4 },
+      { pose: { pelvis: [7, 0, 0], ...legs(-7, 0, 0, 2), ...arms(-150, -28, 15) }, move: 0.4 },
+      { pose: { pelvis: [10, 0, 0], ...legs(-10, 0, 0, 2), ...arms(-175, 0, 15) }, move: 0.4, hold: 0.6 },
+      { pose: { pelvis: [7, 0, 0], ...legs(-7, 0, 0, 2), ...arms(-150, -28, 15) }, move: 0.45 },
+      { pose: { pelvis: [5, 0, 0], ...legs(-5, 0, 0, 2), ...arms(-130, -54, 15) }, move: 0.45 },
+      { pose: { pelvis: [1, 0, 0], ...legs(-1, 0, 0, 2), ...arms(-110, -70, 15) }, move: 0.45 },
     ],
     anchor: SOLES,
     props: [{ type: 'wall', at: ['l_wrist', 'r_wrist'], frame: 0, offset: [0, 0, 0.045], rotY: 180 }],
-    view: { az: 55, el: 10 },
+    view: { az: 130, el: 15 },
     highlight: ['l_upperarm', 'r_upperarm'],
+    ease: 'linear',
   },
 
   'band-external-rotation': {
@@ -267,7 +292,7 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
       { pose: {}, move: 1, hold: 1 },
       { pose: { neck: [-12, 0, 0], head: [14, 0, 0] }, move: 1, hold: 3 },
     ],
-    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.12, 0.08] }],
+    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.135, 0.08] }],
     view: { az: 90, el: 5, dist: 1.7, focus: 'neck' },
     highlight: ['neck'],
   },
@@ -276,9 +301,10 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
     base: 'quadruped',
     keyframes: [
       { pose: {}, move: 1.2, hold: 0.3 },
-      { pose: { pelvis: [68, 0, 0], ...legs(-68, 90, 75, 3), spine: [25, 0, 0], chest: [12, 0, 0], ...arms(-105, 0, 4), neck: [35, 0, 0] }, move: 1.5, hold: 1 },
+      // Pelvis tilts back while the back rounds, so hands and knees both stay on the floor.
+      { pose: { pelvis: [53, 0, 0], ...legs(-53, 90, 75, 3), spine: [25, 0, 0], chest: [12, 0, 0], ...arms(-90, 0, 4), neck: [35, 0, 0] }, move: 1.5, hold: 1 },
       { pose: {}, move: 1.2, hold: 0.3 },
-      { pose: { pelvis: [92, 0, 0], ...legs(-92, 90, 75, 3), spine: [-15, 0, 0], chest: [-8, 0, 0], ...arms(-69, 0, 4), neck: [-25, 0, 0] }, move: 1.5, hold: 1 },
+      { pose: { pelvis: [94, 0, 0], ...legs(-94, 90, 75, 3), spine: [-15, 0, 0], chest: [-8, 0, 0], ...arms(-71, 0, 4), neck: [-25, 0, 0] }, move: 1.5, hold: 1 },
     ],
     anchor: KNEES,
     props: [MAT],
@@ -318,6 +344,7 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
       { pose: { pelvis: [71, 0, 0], ...legs(0, 90, 30, 3), ...arms(-71, -90, 8), neck: [0, 0, 0] }, move: 1.5, hold: 4 },
     ],
     anchor: ['l_elbow', 'r_elbow'],
+    contact: ['l_elbow', 'r_elbow', 'l_knee', 'r_knee'],
     props: [MAT],
     view: { az: 90, el: 10 },
     highlight: ['abdomen'],
@@ -343,7 +370,7 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
       { pose: { pelvis: [35, 0, 0], ...legs(-115, 70, 0, 4), ...arms(-55, -15, 8) }, move: 1.2 },
     ],
     anchor: SOLES,
-    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.12, 0.09] }],
+    props: [{ type: 'chair', ref: 'seat', at: 'pelvis', frame: 0, offset: [0, -0.135, 0.04] }],
     view: { az: 90, el: 10 },
     highlight: ['l_thigh', 'r_thigh', 'pelvis'],
   },

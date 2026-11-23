@@ -17,10 +17,12 @@ import {
   type TranslationDraft,
 } from '../lib/exerciseEdit';
 import ConfirmDialog from '../components/ConfirmDialog';
+import Modal from '../components/Modal';
 import { PUPPET_EXERCISES } from '../puppet/exercises';
 import kineaidExercises from '../../scripts/data/kineaid-exercises.json';
 
 const PuppetViewer = lazy(() => import('../puppet/PuppetViewer'));
+const PuppetEditor = lazy(() => import('../puppet/PuppetEditor'));
 /** KineAid exercises with an animation, as starting points for a new puppet. */
 const PUPPET_CHOICES = (kineaidExercises as { id: string; nl: { name: string }; en: { name: string } }[]).filter((e) => PUPPET_EXERCISES[e.id]);
 
@@ -44,6 +46,7 @@ export default function ExerciseEditor() {
   const [busy, setBusy] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [editingPuppet, setEditingPuppet] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const previews = useRef(new Map<string, string>());
@@ -328,6 +331,9 @@ export default function ExerciseEditor() {
               </option>
             ))}
           </select>
+          <button type="button" className="btn-primary" onClick={() => setEditingPuppet(true)}>
+            ✎ {draft.puppet ? t('editor.puppetEdit') : t('editor.puppetCreate')}
+          </button>
           {draft.puppet && (
             <button type="button" className="btn-secondary text-red-600" onClick={() => set({ puppet: null })}>
               {t('editor.puppetRemove')}
@@ -406,6 +412,21 @@ export default function ExerciseEditor() {
         <button type="button" className="text-sm text-red-600 hover:underline disabled:opacity-50" onClick={() => setConfirmingDelete(true)} disabled={busy}>
           🗑 {t('editor.delete')}
         </button>
+      )}
+
+      {editingPuppet && (
+        <Modal title={t('puppetEditor.title')} onClose={() => setEditingPuppet(false)} closeOnBackdrop={false}>
+          <Suspense fallback={<p className="p-8 text-center text-slate-500">{t('app.loading')}</p>}>
+            <PuppetEditor
+              value={draft.puppet}
+              onCancel={() => setEditingPuppet(false)}
+              onDone={(p) => {
+                set({ puppet: p });
+                setEditingPuppet(false);
+              }}
+            />
+          </Suspense>
+        </Modal>
       )}
 
       {confirmingDelete && (
