@@ -330,12 +330,15 @@ export class PuppetScene {
       return mirror ? mirrorPose(pose) : pose;
     });
     const n = frames.length;
+    // Order in which the keyframes are visited: 0..n-1 then back to 0, or (pingpong) 0..n-1..1 then 0.
+    const order = ex.pingpong && n > 2 ? [...Array(n).keys(), ...Array.from({ length: n - 2 }, (_, k) => n - 2 - k)] : [...Array(n).keys()];
     const segments: PreparedSide['segments'] = [];
-    for (let i = 0; i < n; i++) {
-      const next = (i + 1) % n;
+    order.forEach((i, k) => {
+      const next = order[(k + 1) % order.length];
       segments.push({ from: i, to: i, dur: ex.keyframes[i].hold ?? 0 });
-      if (n > 1) segments.push({ from: i, to: next, dur: ex.keyframes[next].move ?? 1 });
-    }
+      // Moving forward uses the target keyframe's move time; moving back (pingpong) the one being left.
+      if (n > 1) segments.push({ from: i, to: next, dur: (ex.pingpong && next < i ? ex.keyframes[i].move : ex.keyframes[next].move) ?? 1 });
+    });
     const total = Math.max(0.001, segments.reduce((a, s) => a + s.dur, 0));
     const hasMat = ex.props?.some((p) => p.type === 'mat') ?? false;
     const prepared: PreparedSide = {

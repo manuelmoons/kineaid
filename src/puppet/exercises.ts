@@ -46,6 +46,8 @@ export interface PuppetExercise {
   /** Exercise is authored for the LEFT side. 'alternate' shows left, then right. */
   sides?: 'one' | 'alternate';
   ease?: 'smooth' | 'linear';
+  /** Play the keyframes forward and then backward (1 → n → 1), e.g. for a slide out and back. */
+  pingpong?: boolean;
 }
 
 // ─── Building blocks ─────────────────────────────────────────
@@ -69,8 +71,10 @@ const arms = (flex: number, elbow: number, abd = 7, rot = 0): Pose => ({
 
 export const BASES: Record<BaseName, Pose> = {
   standing: { ...arms(0, -8, 7), ...legs(0, 0, 0, 2) },
-  supine: { pelvis: [-90, 0, 0], ...arms(0, -5, 10), ...legs(0, 0, 15, 2) },
-  hookLying: { pelvis: [-90, 0, 0], ...arms(0, -5, 12), ...legs(-50, 100, 40, 2) },
+  // Slight hip extension so the heels rest on the floor (the buttocks lift the pelvis a little).
+  supine: { pelvis: [-90, 0, 0], ...arms(0, -5, 10), ...legs(2, 0, 13, 2) },
+  // Knee angle solved so the feet rest flat on the floor with the pelvis down.
+  hookLying: { pelvis: [-90, 0, 0], ...arms(0, -5, 12), ...legs(-50, 113, 27, 2) },
   prone: { pelvis: [90, 0, 0], ...arms(0, 0, 10), ...legs(0, 0, 60, 3) },
   sideLying: {
     pelvis: [-90, 0, 90],
@@ -79,8 +83,12 @@ export const BASES: Record<BaseName, Pose> = {
     r_hip: [-45, 0, 0],
     l_shoulder: [-35, 0, 5],
     l_elbow: [-30, 0, 0],
-    r_shoulder: [-90, 0, 0],
-    r_elbow: [-70, 0, 0],
+    // Head resting on the lower arm; trunk bent slightly so hip and shoulder both rest on the floor (solved).
+    r_shoulder: [-170, 0, 0],
+    r_elbow: [-140, 0, 0],
+    spine: [0, 0, -7],
+    chest: [0, 0, -7],
+    neck: [0, 0, 10],
   },
   quadruped: { pelvis: [80, 0, 0], ...legs(-80, 90, 75, 3), ...arms(-80, 0, 4), l_wrist: [-90, -90, 0], r_wrist: [-90, 90, 0], neck: [8, 0, 0] },
   seated: { ...legs(-90, 90, 0, 4), ...arms(-20, -55, 10) },
@@ -106,7 +114,8 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
     base: 'hookLying',
     keyframes: [
       { pose: {}, move: 1.4, hold: 0.8 },
-      { pose: { pelvis: [-115, 0, 0], ...legs(0, 75, 40, 2), neck: [25, 0, 0] }, move: 1.2, hold: 2 },
+      // Solved: shoulders and feet on the floor, thighs in line with the trunk.
+      { pose: { pelvis: [-107, 0, 0], ...legs(0, 69, 38, 2), neck: [17, 0, 0] }, move: 1.2, hold: 2 },
     ],
     anchor: SOLES,
     props: [MAT],
@@ -139,10 +148,26 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
 
   'heel-slide': {
     base: 'supine',
+    // Every 5° of hip bend the knee angle is solved so the heel keeps sliding over the floor (within 3 mm).
     keyframes: [
-      { pose: {}, move: 1.5, hold: 0.5 },
-      { pose: { l_hip: [-60, 0, 2], l_knee: [115, 0, 0], l_ankle: [35, 0, 0] }, move: 1.5, hold: 0.5 },
+      { pose: {}, move: 0.15, hold: 0.6 },
+      ...([
+        [-5, 13.25, 13.6],
+        [-10, 23, 14.2],
+        [-15, 32.75, 14.8],
+        [-20, 42.5, 15.3],
+        [-25, 52.5, 15.9],
+        [-30, 62.75, 16.5],
+        [-35, 73.5, 17.1],
+        [-40, 84.25, 17.7],
+        [-45, 95.75, 18.3],
+        [-50, 108.5, 18.8],
+        [-55, 125, 19.4],
+      ] as const).map(([hip, knee, ankle]): Keyframe => ({ pose: { l_hip: [hip, 0, 2], l_knee: [knee, 0, 0], l_ankle: [ankle, 0, 0] }, move: 0.13 })),
+      { pose: { l_hip: [-60, 0, 2], l_knee: [134, 0, 0], l_ankle: [20, 0, 0] }, move: 0.15, hold: 0.6 },
     ],
+    pingpong: true,
+    ease: 'linear',
     props: [MAT],
     view: { az: 90, el: 12 },
     highlight: ['l_thigh'],
@@ -151,8 +176,8 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
   'straight-leg-raise': {
     base: 'supine',
     keyframes: [
-      { pose: { r_hip: [-50, 0, -2], r_knee: [100, 0, 0], r_ankle: [40, 0, 0], l_ankle: [-8, 0, 0] }, move: 1.5, hold: 0.5 },
-      { pose: { r_hip: [-50, 0, -2], r_knee: [100, 0, 0], r_ankle: [40, 0, 0], l_ankle: [-8, 0, 0], l_hip: [-45, 0, 2] }, move: 1.5, hold: 1 },
+      { pose: { r_hip: [-50, 0, -2], r_knee: [113, 0, 0], r_ankle: [27, 0, 0], l_hip: [3.6, 0, 2], l_ankle: [-8, 0, 0] }, move: 1.5, hold: 0.5 },
+      { pose: { r_hip: [-50, 0, -2], r_knee: [113, 0, 0], r_ankle: [27, 0, 0], l_ankle: [-8, 0, 0], l_hip: [-45, 0, 2] }, move: 1.5, hold: 1 },
     ],
     props: [MAT],
     view: { az: 90, el: 12 },
@@ -329,7 +354,8 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
     base: 'hookLying',
     keyframes: [
       { pose: {}, move: 1, hold: 0.8 },
-      { pose: { pelvis: [-82, 0, 0], l_hip: [-58, 0, 2], r_hip: [-58, 0, -2], spine: [-8, 0, 0] }, move: 1, hold: 1.5 },
+      // Posterior tilt: the pubic bone tilts up and the lower back flattens; trunk and feet stay on the floor.
+      { pose: { pelvis: [-98, 0, 0], ...legs(-42, 117, 23, 2), spine: [8, 0, 0] }, move: 1, hold: 1.5 },
     ],
     anchor: SOLES,
     props: [MAT],

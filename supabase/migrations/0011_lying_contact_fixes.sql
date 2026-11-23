@@ -1,0 +1,9 @@
+-- 3D puppet: lying exercises rest properly on the floor:
+--   bridge (feet flat, shoulders down), pelvic-tilt (posterior tilt, trunk stays down),
+--   heel-slide (heel stays on the floor), straight-leg-raise (resting leg on the floor).
+-- Safe to run more than once.
+
+update public.exercises set puppet = '{"base":"hookLying","keyframes":[{"pose":{},"move":1.4,"hold":0.8},{"pose":{"pelvis":[-107,0,0],"l_hip":[0,0,2],"r_hip":[0,0,-2],"l_knee":[69,0,0],"r_knee":[69,0,0],"l_ankle":[38,0,0],"r_ankle":[38,0,0],"neck":[17,0,0]},"move":1.2,"hold":2}],"anchor":["l_sole","r_sole"],"props":[{"type":"mat"}],"view":{"az":90,"el":12},"highlight":["pelvis"]}'::jsonb where source = 'kineaid' and source_id = 'bridge';
+update public.exercises set puppet = '{"base":"hookLying","keyframes":[{"pose":{},"move":1,"hold":0.8},{"pose":{"pelvis":[-98,0,0],"l_hip":[-42,0,2],"r_hip":[-42,0,-2],"l_knee":[117,0,0],"r_knee":[117,0,0],"l_ankle":[23,0,0],"r_ankle":[23,0,0],"spine":[8,0,0]},"move":1,"hold":1.5}],"anchor":["l_sole","r_sole"],"props":[{"type":"mat"}],"view":{"az":90,"el":8},"highlight":["abdomen","pelvis"]}'::jsonb where source = 'kineaid' and source_id = 'pelvic-tilt';
+update public.exercises set puppet = '{"base":"supine","keyframes":[{"pose":{},"move":1.5,"hold":0.5},{"pose":{"l_hip":[-60,0,2],"l_knee":[134,0,0],"l_ankle":[20,0,0]},"move":1.5,"hold":0.5}],"props":[{"type":"mat"}],"view":{"az":90,"el":12},"highlight":["l_thigh"]}'::jsonb where source = 'kineaid' and source_id = 'heel-slide';
+update public.exercises set puppet = '{"base":"supine","keyframes":[{"pose":{"r_hip":[-50,0,-2],"r_knee":[113,0,0],"r_ankle":[27,0,0],"l_hip":[3.6,0,2],"l_ankle":[-8,0,0]},"move":1.5,"hold":0.5},{"pose":{"r_hip":[-50,0,-2],"r_knee":[113,0,0],"r_ankle":[27,0,0],"l_ankle":[-8,0,0],"l_hip":[-45,0,2]},"move":1.5,"hold":1}],"props":[{"type":"mat"}],"view":{"az":90,"el":12},"highlight":["l_thigh"]}'::jsonb where source = 'kineaid' and source_id = 'straight-leg-raise';
