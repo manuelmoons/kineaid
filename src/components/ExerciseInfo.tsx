@@ -84,7 +84,23 @@ export default function ExerciseInfo({
       <p className="text-xs text-slate-500">
         {t('exercise.source')}:{' '}
         {exercise.owner_id ? (
-          t('exercise.sourceOwn')
+          <>
+            {t('exercise.sourceOwn')}
+            {exercise.author && (
+              <>
+                {' '}
+                · {t('exercise.basedOn')}{' '}
+                {exercise.source_url ? (
+                  <a href={exercise.source_url} target="_blank" rel="noreferrer" className="underline">
+                    {exercise.author}
+                  </a>
+                ) : (
+                  exercise.author
+                )}
+                {exercise.license && ` (${exercise.license})`}
+              </>
+            )}
+          </>
         ) : exercise.source_url || source?.url ? (
           <a href={exercise.source_url || source?.url} target="_blank" rel="noreferrer" className="underline">
             {source?.name ?? exercise.source}
@@ -93,7 +109,7 @@ export default function ExerciseInfo({
           source?.name ?? exercise.source
         )}
         {exercise.license && !exercise.owner_id && <> · {exercise.license}</>}
-        {exercise.author && exercise.author !== source?.name && <> · {exercise.author}</>}
+        {!exercise.owner_id && exercise.author && exercise.author !== source?.name && <> · {exercise.author}</>}
         {images[imgIndex]?.author && images[imgIndex].author !== exercise.author && (
           <>
             {' '}

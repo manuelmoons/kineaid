@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getExercise, normalizeLang, pickTranslation, type Exercise } from '../lib/exercises';
 import ExerciseInfo from '../components/ExerciseInfo';
+import { useAuth } from '../lib/auth';
 
 export default function ExerciseDetail() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { profile } = useAuth();
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,9 +29,23 @@ export default function ExerciseDetail() {
 
   return (
     <div className="space-y-4">
-      <button onClick={() => navigate(-1)} className="text-sm text-brand-700 hover:underline">
-        ← {t('app.back')}
-      </button>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <button onClick={() => navigate(-1)} className="text-sm text-brand-700 hover:underline">
+          ← {t('app.back')}
+        </button>
+        {profile?.role === 'kine' && (
+          <div className="flex gap-2">
+            {d.owner_id === profile.id && (
+              <Link to={`/exercise/${d.id}/edit`} className="btn-primary py-2 text-sm">
+                ✎ {t('exercise.edit')}
+              </Link>
+            )}
+            <Link to={`/exercise/new?copy=${d.id}`} className="btn-secondary py-2 text-sm">
+              ⧉ {t('exercise.copy')}
+            </Link>
+          </div>
+        )}
+      </div>
       <div>
         <h1 className="text-2xl font-bold">{tr?.name}</h1>
         <div className="mt-2 flex flex-wrap gap-2">

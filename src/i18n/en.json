@@ -32,7 +32,8 @@
     "own": "own",
     "add": "Add",
     "added": "Added",
-    "more": "Load more"
+    "more": "Load more",
+    "newExercise": "New exercise"
   },
   "exercise": {
     "kindTime": "Hold (time)",
@@ -48,7 +49,10 @@
     "photoBy": "photo:",
     "suggested": "Suggested",
     "defaultTime": "{{sets}} × hold {{hold}} seconds",
-    "defaultReps": "{{sets}} × {{reps}} repetitions"
+    "defaultReps": "{{sets}} × {{reps}} repetitions",
+    "edit": "Edit",
+    "copy": "Copy and adapt",
+    "basedOn": "based on"
   },
   "program": {
     "programs": "Programs",
@@ -210,5 +214,47 @@
     "custom": "Exercises your physiotherapist adds remain the property of the physiotherapist.",
     "license": "License",
     "disclaimer": "KineAid does not replace professional advice. Only do exercises as prescribed by your physiotherapist and stop if it hurts."
+  },
+  "editor": {
+    "titleNew": "New exercise",
+    "titleEdit": "Edit exercise",
+    "titleCopy": "Copy and adapt exercise",
+    "copySuffix": "copy",
+    "onlyKine": "Only a physiotherapist can create or edit exercises.",
+    "notOwner": "You can only edit your own exercises. Use \"Copy and adapt\" to make your own version.",
+    "langHint": "Fill in at least one language. Patients see the other language when one is missing.",
+    "name": "Name",
+    "description": "Short description",
+    "onePerLine": "One step or point per line.",
+    "fallbackHint": "Not filled in: patients see the {{lang}} text here.",
+    "kind": "Type of exercise",
+    "perSide": "Do on each side (left and right)",
+    "defaultDosage": "Default dosage (can be changed per program)",
+    "equipment": "Equipment",
+    "equipmentPlaceholder": "e.g. chair, band, towel",
+    "level": "Level",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "photos": "Photos",
+    "addPhotos": "Add photos",
+    "removePhoto": "Remove photo",
+    "video": "Video link (optional)",
+    "basedOn": "Based on",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete exercise",
+    "confirmDelete": "Permanently delete this exercise and its photos?",
+    "inUse_one": "This exercise is still used in {{count}} program. Remove it there first.",
+    "inUse_other": "This exercise is still used in {{count}} programs. Remove it there first.",
+    "errName": "Give the exercise a name.",
+    "errBodyPart": "Choose at least one body part.",
+    "errDosage": "Enter a valid default dosage.",
+    "errVideo": "The video link must start with http:// or https://.",
+    "photoEarlier": "Move photo earlier",
+    "photoLater": "Move photo later",
+    "unsaved": "Unsaved changes: click Save to keep them."
   }
 }

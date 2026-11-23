@@ -17,6 +17,7 @@ import {
 import ExerciseBrowser from '../components/ExerciseBrowser';
 import ExerciseThumb from '../components/ExerciseThumb';
 import Modal from '../components/Modal';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 export default function ProgramEditor() {
   const { id = '' } = useParams();
@@ -27,6 +28,7 @@ export default function ProgramEditor() {
   const [error, setError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const reload = useCallback(() => getProgram(id).then(setProgram).catch((e) => setError(e.message)), [id]);
   useEffect(() => {
@@ -130,13 +132,24 @@ export default function ProgramEditor() {
           )}
           <button
             className="btn ml-auto text-red-700 hover:bg-red-50"
-            onClick={() => {
-              if (window.confirm(t('program.confirmDelete'))) run(() => deleteProgram(program.id)).then(() => navigate(backTo));
-            }}
+            onClick={() => setConfirmingDelete(true)}
           >
             {t('program.delete')}
           </button>
         </div>
+      )}
+
+      {confirmingDelete && (
+        <ConfirmDialog
+          danger
+          message={t('program.confirmDelete')}
+          confirmLabel={t('program.delete')}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => {
+            setConfirmingDelete(false);
+            run(() => deleteProgram(program.id)).then(() => navigate(backTo));
+          }}
+        />
       )}
 
       {picking && (

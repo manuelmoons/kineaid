@@ -32,7 +32,8 @@
     "own": "eigen",
     "add": "Toevoegen",
     "added": "Toegevoegd",
-    "more": "Meer laden"
+    "more": "Meer laden",
+    "newExercise": "Nieuwe oefening"
   },
   "exercise": {
     "kindTime": "Aanhouden (tijd)",
@@ -48,7 +49,10 @@
     "photoBy": "foto:",
     "suggested": "Voorstel",
     "defaultTime": "{{sets}} × {{hold}} seconden aanhouden",
-    "defaultReps": "{{sets}} × {{reps}} herhalingen"
+    "defaultReps": "{{sets}} × {{reps}} herhalingen",
+    "edit": "Bewerken",
+    "copy": "Kopiëren en aanpassen",
+    "basedOn": "gebaseerd op"
   },
   "program": {
     "programs": "Programma's",
@@ -210,5 +214,47 @@
     "custom": "Oefeningen die je kinesitherapeut zelf toevoegt, blijven eigendom van de kinesitherapeut.",
     "license": "Licentie",
     "disclaimer": "KineAid vervangt geen professioneel advies. Doe oefeningen enkel zoals je kinesitherapeut ze heeft voorgeschreven en stop bij pijn."
+  },
+  "editor": {
+    "titleNew": "Nieuwe oefening",
+    "titleEdit": "Oefening bewerken",
+    "titleCopy": "Oefening kopiëren en aanpassen",
+    "copySuffix": "kopie",
+    "onlyKine": "Alleen een kinesitherapeut kan oefeningen aanmaken of bewerken.",
+    "notOwner": "Je kan alleen je eigen oefeningen bewerken. Gebruik \"Kopiëren en aanpassen\" om een eigen versie te maken.",
+    "langHint": "Vul minstens één taal in. Patiënten zien de andere taal als die ontbreekt.",
+    "name": "Naam",
+    "description": "Korte beschrijving",
+    "onePerLine": "Eén stap of punt per regel.",
+    "fallbackHint": "Niet ingevuld: patiënten zien hier de {{lang}}-tekst.",
+    "kind": "Soort oefening",
+    "perSide": "Per kant uitvoeren (links en rechts)",
+    "defaultDosage": "Standaarddosering (aan te passen per programma)",
+    "equipment": "Materiaal",
+    "equipmentPlaceholder": "bv. stoel, elastiek, handdoek",
+    "level": "Niveau",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Gevorderd",
+      "expert": "Expert"
+    },
+    "photos": "Foto's",
+    "addPhotos": "Foto's toevoegen",
+    "removePhoto": "Foto verwijderen",
+    "video": "Videolink (optioneel)",
+    "basedOn": "Gebaseerd op",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "delete": "Oefening verwijderen",
+    "confirmDelete": "Deze oefening en haar foto's definitief verwijderen?",
+    "inUse_one": "Deze oefening zit nog in {{count}} programma. Haal ze daar eerst uit.",
+    "inUse_other": "Deze oefening zit nog in {{count}} programma's. Haal ze daar eerst uit.",
+    "errName": "Geef de oefening een naam.",
+    "errBodyPart": "Kies minstens één lichaamsdeel.",
+    "errDosage": "Vul een geldige standaarddosering in.",
+    "errVideo": "De videolink moet beginnen met http:// of https://.",
+    "photoEarlier": "Foto naar voren",
+    "photoLater": "Foto naar achteren",
+    "unsaved": "Niet-opgeslagen wijzigingen: klik op Opslaan om ze te bewaren."
   }
 }
