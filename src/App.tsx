@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './lib/auth';
@@ -15,6 +15,9 @@ import ExerciseDetail from './pages/ExerciseDetail';
 import ProgramEditor from './pages/ProgramEditor';
 import Workout from './pages/Workout';
 import KinePatient from './pages/KinePatient';
+
+const PuppetDemo = lazy(() => import('./pages/PuppetDemo'));
+const puppetRoute = <Route path="/puppet" element={<Suspense fallback={null}><PuppetDemo /></Suspense>} />;
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -50,12 +53,14 @@ export default function App() {
       {!isSupabaseConfigured ? (
         <Routes>
           <Route path="/credits" element={<Credits />} />
+          {puppetRoute}
           <Route path="*" element={<SetupMissing />} />
         </Routes>
       ) : (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/credits" element={<Credits />} />
+          {puppetRoute}
           <Route path="/join/:code" element={<Join />} />
           <Route path="/" element={<RequireAuth><HomeRedirect /></RequireAuth>} />
           <Route path="/welcome" element={<RequireAuth><Onboarding /></RequireAuth>} />

@@ -83,6 +83,13 @@
     "exerciseCount_one": "{{count}} oefening",
     "exerciseCount_other": "{{count}} oefeningen"
   },
+  "puppet": {
+    "resetView": "Beeld herstellen",
+    "demoTitle": "3D-oefenpop (prototype)",
+    "demoIntro": "Bewegende pop voor de KineAid-oefeningen. Sleep om het beeld te draaien.",
+    "side": "Kant",
+    "auto": "Automatisch"
+  },
   "workout": {
     "start": "Start",
     "stop": "Stoppen",

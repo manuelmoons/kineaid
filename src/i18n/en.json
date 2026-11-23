@@ -83,6 +83,13 @@
     "exerciseCount_one": "{{count}} exercise",
     "exerciseCount_other": "{{count}} exercises"
   },
+  "puppet": {
+    "resetView": "Reset view",
+    "demoTitle": "3D exercise puppet (prototype)",
+    "demoIntro": "Animated mannequin for the KineAid exercises. Drag to rotate the view.",
+    "side": "Side",
+    "auto": "Auto"
+  },
   "workout": {
     "start": "Start",
     "stop": "Stop",

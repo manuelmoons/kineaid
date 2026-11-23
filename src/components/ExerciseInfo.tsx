@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeLang, pickTranslation, SOURCE_LABELS, type Exercise } from '../lib/exercises';
 import ExerciseThumb from './ExerciseThumb';
+import { puppetFor } from '../puppet/exercises';
+
+const PuppetViewer = lazy(() => import('../puppet/PuppetViewer'));
 
 /** Photos, instructions, "pay attention to" and credits of one exercise. */
-export default function ExerciseInfo({ exercise, compact = false }: { exercise: Exercise; compact?: boolean }) {
+export default function ExerciseInfo({
+  exercise,
+  compact = false,
+  side = null,
+}: {
+  exercise: Exercise;
+  compact?: boolean;
+  /** Side currently being trained, for exercises done per side. */
+  side?: 'left' | 'right' | null;
+}) {
   const { t, i18n } = useTranslation();
   const lang = normalizeLang(i18n.resolvedLanguage);
   const tr = pickTranslation(exercise.exercise_translations, lang);
@@ -12,12 +24,19 @@ export default function ExerciseInfo({ exercise, compact = false }: { exercise: 
   const [imgIndex, setImgIndex] = useState(0);
   const source = SOURCE_LABELS[exercise.source];
   const translatedFallback = tr && tr.locale !== lang;
+  const puppet = puppetFor(exercise.source, exercise.source_id);
 
   return (
     <div className="space-y-4">
       <div className={`relative overflow-hidden rounded-2xl bg-slate-100 ${compact ? 'aspect-[4/3]' : 'aspect-video'}`}>
-        <ExerciseThumb key={images[imgIndex]?.url ?? 'none'} url={images[imgIndex]?.url} bodyParts={exercise.body_parts} alt={tr?.name} />
-        {images.length > 1 && (
+        {puppet ? (
+          <Suspense fallback={<ExerciseThumb url={null} bodyParts={exercise.body_parts} />}>
+            <PuppetViewer exercise={puppet} side={side} />
+          </Suspense>
+        ) : (
+          <ExerciseThumb key={images[imgIndex]?.url ?? 'none'} url={images[imgIndex]?.url} bodyParts={exercise.body_parts} alt={tr?.name} />
+        )}
+        {!puppet && images.length > 1 && (
           <div className="absolute inset-x-0 bottom-2 flex justify-center gap-2">
             {images.map((img, i) => (
               <button

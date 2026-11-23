@@ -358,7 +358,7 @@ function ExercisePlayer({
       <details className="card" open={phase === 'ready' && setsDone === 0}>
         <summary className="cursor-pointer font-semibold">{t('workout.howTo')}</summary>
         <div className="mt-3">
-          <ExerciseInfo exercise={ex} compact />
+          <ExerciseInfo exercise={ex} compact side={side} />
         </div>
       </details>
     </div>
