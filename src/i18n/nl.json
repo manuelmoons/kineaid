@@ -7,7 +7,9 @@
     "language": "Taal",
     "back": "Terug",
     "close": "Sluiten",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "roleKine": "Kinesitherapeut",
+    "rolePatient": "Patiënt"
   },
   "bodyParts": {
     "neck": "Nek",
@@ -194,7 +196,7 @@
   "patient": {
     "today": "Vandaag",
     "myKine": "Mijn kine",
-    "noProgram": "Je hebt nog geen oefenprogramma. Je kine kan er een voor je klaarzetten, of je maakt er zelf een.",
+    "noProgram": "Je hebt nog geen oefenprogramma. Je kinesitherapeut zet er een voor je klaar.",
     "newOwnProgram": "Zelf een programma maken",
     "doneToday": "workouts vandaag",
     "streak": "dagen op rij"
@@ -211,7 +213,33 @@
     "noPrograms": "Nog geen programma's. Maak er een aan voor deze patiënt.",
     "activity": "Recente workouts",
     "noActivity": "Nog geen workouts gedaan.",
-    "streakInfo": "{{streak}} dagen op rij · {{today}} vandaag"
+    "streakInfo": "{{streak}} dagen op rij · {{today}} vandaag",
+    "invitePatient": "Patiënt uitnodigen",
+    "searchPatients": "Zoek op naam of e-mail…",
+    "sortBy": "Sorteren",
+    "sort": {
+      "activity": "Laatst geoefend",
+      "name": "Naam",
+      "newest": "Nieuwste patiënten"
+    },
+    "filter": {
+      "all": "Patiënten",
+      "active": "Oefenden deze week",
+      "attention": "Opvolgen (7+ dagen niets)",
+      "noProgram": "Zonder programma"
+    },
+    "patientCount_one": "{{count}} patiënt",
+    "patientCount_other": "{{count}} patiënten",
+    "noMatches": "Geen patiënten gevonden.",
+    "neverExercised": "Nog niet geoefend",
+    "exercisedToday": "Vandaag geoefend",
+    "exercisedYesterday": "Gisteren geoefend",
+    "exercisedDaysAgo_one": "{{count}} dag geleden",
+    "exercisedDaysAgo_other": "{{count}} dagen geleden",
+    "sessionsThisWeek_one": "{{count}}× deze week",
+    "sessionsThisWeek_other": "{{count}}× deze week",
+    "noProgramBadge": "geen programma",
+    "showMore": "Toon {{count}} meer"
   },
   "credits": {
     "title": "Bronnen en licenties",

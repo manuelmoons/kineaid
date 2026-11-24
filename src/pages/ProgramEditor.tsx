@@ -40,7 +40,8 @@ export default function ProgramEditor() {
   if (error) return <p className="rounded-xl bg-red-50 p-3 text-red-700">{error}</p>;
   if (!program || !profile) return <p className="p-8 text-center text-slate-500">{t('app.loading')}</p>;
 
-  const canEdit = program.kine_id === profile.id || (program.patient_id === profile.id && !program.kine_id);
+  // Only the kine who made a program changes it; patients view and do their programs.
+  const canEdit = program.kine_id === profile.id;
   const items = program.program_items;
 
   const run = async (fn: () => Promise<unknown>) => {

@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
-import { createProgram, getSessionStats, listPrograms, type Program, type SessionStats } from '../lib/programs';
+import { getSessionStats, listPrograms, type Program, type SessionStats } from '../lib/programs';
 import NamePrompt from '../components/NamePrompt';
 import ProgramList from '../components/ProgramList';
-import NewProgramForm from '../components/NewProgramForm';
 
 export default function PatientHome() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { profile } = useAuth();
   const [kines, setKines] = useState<string[]>([]);
   const [programs, setPrograms] = useState<(Program & { item_count: number })[] | null>(null);
@@ -36,15 +34,6 @@ export default function PatientHome() {
 
   if (profile?.role === 'kine') return <Navigate to="/kine" replace />;
   if (!profile) return null;
-
-  const newProgram = async (name: string) => {
-    try {
-      const p = await createProgram({ patient_id: profile.id, kine_id: null, name });
-      navigate(`/programs/${p.id}`);
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
 
   const active = programs?.filter((p) => p.active) ?? [];
   const inactive = programs?.filter((p) => !p.active) ?? [];
@@ -84,16 +73,14 @@ export default function PatientHome() {
           <p>{t('patient.noProgram')}</p>
         </div>
       ) : (
-        <ProgramList programs={active} canStart canEdit={(p) => !p.kine_id} />
+        <ProgramList programs={active} canStart canEdit={() => false} />
       )}
-
-      <NewProgramForm label={t('patient.newOwnProgram')} onCreate={newProgram} />
 
       {inactive.length > 0 && (
         <details>
           <summary className="cursor-pointer text-sm text-slate-600">{t('program.inactivePrograms', { count: inactive.length })}</summary>
           <div className="mt-3">
-            <ProgramList programs={inactive} canStart={false} canEdit={(p) => !p.kine_id} />
+            <ProgramList programs={inactive} canStart={false} canEdit={() => false} />
           </div>
         </details>
       )}

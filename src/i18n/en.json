@@ -7,7 +7,9 @@
     "language": "Language",
     "back": "Back",
     "close": "Close",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "roleKine": "Physiotherapist",
+    "rolePatient": "Patient"
   },
   "bodyParts": {
     "neck": "Neck",
@@ -194,7 +196,7 @@
   "patient": {
     "today": "Today",
     "myKine": "My physio",
-    "noProgram": "You don't have an exercise program yet. Your physio can set one up for you, or you can make one yourself.",
+    "noProgram": "You do not have an exercise program yet. Your physiotherapist will prepare one for you.",
     "newOwnProgram": "Make my own program",
     "doneToday": "workouts today",
     "streak": "days in a row"
@@ -211,7 +213,33 @@
     "noPrograms": "No programs yet. Create one for this patient.",
     "activity": "Recent workouts",
     "noActivity": "No workouts done yet.",
-    "streakInfo": "{{streak}} days in a row · {{today}} today"
+    "streakInfo": "{{streak}} days in a row · {{today}} today",
+    "invitePatient": "Invite patient",
+    "searchPatients": "Search by name or email…",
+    "sortBy": "Sort",
+    "sort": {
+      "activity": "Last exercised",
+      "name": "Name",
+      "newest": "Newest patients"
+    },
+    "filter": {
+      "all": "Patients",
+      "active": "Exercised this week",
+      "attention": "Follow up (7+ days idle)",
+      "noProgram": "Without program"
+    },
+    "patientCount_one": "{{count}} patient",
+    "patientCount_other": "{{count}} patients",
+    "noMatches": "No patients found.",
+    "neverExercised": "Not exercised yet",
+    "exercisedToday": "Exercised today",
+    "exercisedYesterday": "Exercised yesterday",
+    "exercisedDaysAgo_one": "{{count}} day ago",
+    "exercisedDaysAgo_other": "{{count}} days ago",
+    "sessionsThisWeek_one": "{{count}}× this week",
+    "sessionsThisWeek_other": "{{count}}× this week",
+    "noProgramBadge": "no program",
+    "showMore": "Show {{count}} more"
   },
   "credits": {
     "title": "Credits and licenses",

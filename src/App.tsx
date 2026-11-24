@@ -30,6 +30,15 @@ function RequireAuth({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+/** Pages for physiotherapists only (exercise library, exercise editor). Patients go to their programs. */
+function RequireKine({ children }: { children: ReactNode }) {
+  const { profile } = useAuth();
+  const { t } = useTranslation();
+  if (!profile) return <p className="p-8 text-center text-slate-500">{t('app.loading')}</p>;
+  if (profile.role !== 'kine') return <Navigate to="/patient" replace />;
+  return <>{children}</>;
+}
+
 function HomeRedirect() {
   const { profile } = useAuth();
   const { t } = useTranslation();
@@ -71,9 +80,9 @@ export default function App() {
           <Route path="/patient" element={<RequireAuth><PatientHome /></RequireAuth>} />
           <Route path="/kine" element={<RequireAuth><KineHome /></RequireAuth>} />
           <Route path="/kine/patients/:patientId" element={<RequireAuth><KinePatient /></RequireAuth>} />
-          <Route path="/library" element={<RequireAuth><Library /></RequireAuth>} />
-          <Route path="/exercise/new" element={<RequireAuth><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireAuth>} />
-          <Route path="/exercise/:id/edit" element={<RequireAuth><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireAuth>} />
+          <Route path="/library" element={<RequireAuth><RequireKine><Library /></RequireKine></RequireAuth>} />
+          <Route path="/exercise/new" element={<RequireAuth><RequireKine><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireKine></RequireAuth>} />
+          <Route path="/exercise/:id/edit" element={<RequireAuth><RequireKine><Suspense fallback={null}><ExerciseEditor /></Suspense></RequireKine></RequireAuth>} />
           <Route path="/exercise/:id" element={<RequireAuth><ExerciseDetail /></RequireAuth>} />
           <Route path="/programs/:id" element={<RequireAuth><ProgramEditor /></RequireAuth>} />
           <Route path="/workout/:id" element={<RequireAuth><Workout /></RequireAuth>} />

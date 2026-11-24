@@ -19,6 +19,15 @@ export default function Layout({ children }: { children: ReactNode }) {
             <img src="/icon.svg" alt="" className="h-8 w-8" />
             KineAid
           </Link>
+          {isSupabaseConfigured && session && profile && (
+            <span
+              className={`mr-auto rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                profile.role === 'kine' ? 'bg-brand-700 text-white' : 'bg-amber-100 text-amber-900'
+              }`}
+            >
+              {profile.role === 'kine' ? t('app.roleKine') : t('app.rolePatient')}
+            </span>
+          )}
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             {isSupabaseConfigured && session && (
@@ -33,9 +42,11 @@ export default function Layout({ children }: { children: ReactNode }) {
             <NavLink to={profile.role === 'kine' ? '/kine' : '/patient'} className={navClass}>
               {profile.role === 'kine' ? t('kine.patients') : t('patient.today')}
             </NavLink>
-            <NavLink to="/library" className={navClass}>
-              {t('library.title')}
-            </NavLink>
+            {profile.role === 'kine' && (
+              <NavLink to="/library" className={navClass}>
+                {t('library.title')}
+              </NavLink>
+            )}
           </nav>
         )}
       </header>
