@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getInitialAuthError, pendingInvite, useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
@@ -125,6 +125,12 @@ export default function Login() {
 
       {message && <p className="rounded-xl bg-green-50 p-3 text-sm text-green-800">{message}</p>}
       {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+
+      <p className="text-center text-xs text-slate-500">
+        <Link to="/privacy" className="hover:text-slate-800 hover:underline">
+          {t('login.privacyNote')}
+        </Link>
+      </p>
     </div>
   );
 }

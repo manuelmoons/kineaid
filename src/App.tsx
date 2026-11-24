@@ -10,6 +10,7 @@ import Join from './pages/Join';
 import PatientHome from './pages/PatientHome';
 import KineHome from './pages/KineHome';
 import Credits from './pages/Credits';
+import Privacy from './pages/Privacy';
 import Library from './pages/Library';
 import ExerciseDetail from './pages/ExerciseDetail';
 import ProgramEditor from './pages/ProgramEditor';
@@ -54,6 +55,7 @@ export default function App() {
       {!isSupabaseConfigured ? (
         <Routes>
           <Route path="/credits" element={<Credits />} />
+          <Route path="/privacy" element={<Privacy />} />
           {puppetRoute}
           <Route path="*" element={<SetupMissing />} />
         </Routes>
@@ -61,6 +63,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/credits" element={<Credits />} />
+          <Route path="/privacy" element={<Privacy />} />
           {puppetRoute}
           <Route path="/join/:code" element={<Join />} />
           <Route path="/" element={<RequireAuth><HomeRedirect /></RequireAuth>} />

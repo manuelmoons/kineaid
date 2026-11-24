@@ -6,7 +6,8 @@
     "credits": "Bronnen",
     "language": "Taal",
     "back": "Terug",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "privacy": "Privacy"
   },
   "bodyParts": {
     "neck": "Nek",
@@ -164,7 +165,8 @@
     "emailNotConfirmed": "Je e-mailadres is nog niet bevestigd. Klik op de link in de mail die we je stuurden.",
     "rateLimited": "Te veel pogingen of e-mails op korte tijd. Probeer het binnen een uur opnieuw.",
     "linkExpired": "Deze link uit je e-mail is verlopen of al gebruikt. Meld je gewoon aan, of vraag een nieuwe aanmeldlink aan.",
-    "linkError": "Er ging iets mis met de link uit je e-mail. Probeer opnieuw aan te melden."
+    "linkError": "Er ging iets mis met de link uit je e-mail. Probeer opnieuw aan te melden.",
+    "privacyNote": "Hoe we met je gegevens omgaan (privacybeleid)"
   },
   "onboarding": {
     "title": "Welkom bij KineAid",

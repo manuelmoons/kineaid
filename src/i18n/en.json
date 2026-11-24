@@ -6,7 +6,8 @@
     "credits": "Credits",
     "language": "Language",
     "back": "Back",
-    "close": "Close"
+    "close": "Close",
+    "privacy": "Privacy"
   },
   "bodyParts": {
     "neck": "Neck",
@@ -164,7 +165,8 @@
     "emailNotConfirmed": "Your email address is not confirmed yet. Click the link in the email we sent you.",
     "rateLimited": "Too many attempts or emails in a short time. Please try again within an hour.",
     "linkExpired": "This email link has expired or was already used. Just sign in, or request a new sign-in link.",
-    "linkError": "Something went wrong with the link from your email. Please try signing in again."
+    "linkError": "Something went wrong with the link from your email. Please try signing in again.",
+    "privacyNote": "How we handle your data (privacy policy)"
   },
   "onboarding": {
     "title": "Welcome to KineAid",

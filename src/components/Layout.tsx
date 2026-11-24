@@ -42,9 +42,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">{children}</main>
 
-      <footer className="border-t border-slate-200 py-4 text-center text-sm text-slate-500">
+      <footer className="flex justify-center gap-4 border-t border-slate-200 py-4 text-center text-sm text-slate-500">
         <Link to="/credits" className="hover:text-slate-800 hover:underline">
           {t('app.credits')}
+        </Link>
+        <Link to="/privacy" className="hover:text-slate-800 hover:underline">
+          {t('app.privacy')}
         </Link>
       </footer>
     </div>
