@@ -7,7 +7,7 @@ import { normalizeLang, type Lang } from '../lib/exercises';
  */
 export const PRIVACY_CONTACT = {
   name: 'KineAid',
-  email: 'manuel.moons@gmail.com', // shown on this page
+  email: 'kineaid@gmail.com', // shown on this page
 };
 const LAST_UPDATED: Record<Lang, string> = { nl: '24 november 2026', en: '24 November 2026' };
 
