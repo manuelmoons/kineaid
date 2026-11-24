@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { createRig, HIGHLIGHT_COLOR, lerpPose, mirrorName, mirrorPose, type JointName, type PointName, type Pose, type Rig, type SegmentName, type Vec3 } from './rig';
+import { createRig, DEFAULT_LOOK, HIGHLIGHT_COLOR, lerpPose, mirrorName, mirrorPose, type JointName, type PointName, type Pose, type Rig, type SegmentName, type Vec3, type Look } from './rig';
 import { BASES, type Prop, type PropPlacement, type PuppetExercise } from './exercises';
 import { controlsFor } from './controls';
 
@@ -53,6 +53,8 @@ export class PuppetScene {
   private camera = new THREE.PerspectiveCamera(35, 1, 0.05, 50);
   private controls: OrbitControls;
   private rig: Rig;
+  private lastExercise: PuppetExercise | null = null;
+  private lastSide: Side | null = null;
   private sides: PreparedSide[] = [];
   private ease: (t: number) => number = smooth;
   private raf = 0;
@@ -70,7 +72,10 @@ export class PuppetScene {
   /** Called while a body part is dragged, with the joint's new rotation (degrees). Only while a frame is frozen. */
   onDrag?: (joint: JointName, rotation: Vec3) => void;
 
-  constructor(private container: HTMLElement) {
+  constructor(
+    private container: HTMLElement,
+    look: Look = DEFAULT_LOOK,
+  ) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
@@ -99,7 +104,7 @@ export class PuppetScene {
     this.scene.fog = new THREE.Fog(0xf1f5f9, 5, 11);
     this.disposables.push(floorGeo, floorMat);
 
-    this.rig = createRig();
+    this.rig = createRig(look);
     this.scene.add(this.rig.root);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -158,7 +163,20 @@ export class PuppetScene {
     this.resize();
   }
 
+  /** Switch to another figure (man/woman, skin, hair); the exercise and camera stay. */
+  setLook(look: Look) {
+    this.marker.removeFromParent();
+    this.marker.visible = false;
+    this.scene.remove(this.rig.root);
+    this.rig.dispose();
+    this.rig = createRig(look);
+    this.scene.add(this.rig.root);
+    if (this.lastExercise) this.setExercise(this.lastExercise, this.lastSide, { keepCamera: true });
+  }
+
   setExercise(ex: PuppetExercise, side: Side | null, opts: { keepCamera?: boolean } = {}) {
+    this.lastExercise = ex;
+    this.lastSide = side;
     for (const s of this.sides) {
       this.scene.remove(s.props);
       disposeTree(s.props);

@@ -96,19 +96,42 @@ export interface Rig {
   dispose(): void;
 }
 
-/** Colours of the figure: skin, clothes (T-shirt, shorts, shoes) and hair. */
-export const COLORS = {
-  skin: 0xdcae8c,
-  shirt: 0x4f7ca8,
-  shorts: 0x334155,
-  shoe: 0xf1f5f9,
-  sole: 0x94a3b8,
-  hair: 0x4b3621,
-} as const;
-type ColorKind = keyof typeof COLORS;
+/**
+ * How the figure looks. The skeleton (joint positions and limb lengths) is the same for every look,
+ * so all poses, floor contacts and props stay correct; only the body shape, hair and colours change.
+ */
+export interface Look {
+  body: 'male' | 'female';
+  skin: number;
+  hair: number;
+  top: number;
+  bottom: number;
+}
+
+export const SKIN_TONES = [0xf2cfb0, 0xdcae8c, 0xb47c56, 0x7b4f34] as const;
+export const HAIR_COLORS = [0x3b2a1c, 0x16120f, 0xb08850, 0x7a3f22] as const;
+const TOPS = { male: [0x4f7ca8, 0x3f8f7a, 0x5b5f97], female: [0xc8607a, 0x4f9a94, 0x7d63a8] } as const;
+const BOTTOMS = { male: 0x334155, female: 0x2f3349 } as const;
+
+export const DEFAULT_LOOK: Look = { body: 'male', skin: SKIN_TONES[1], hair: HAIR_COLORS[0], top: TOPS.male[0], bottom: BOTTOMS.male };
+
+/** A stable look for a seed (e.g. the exercise id): sometimes a man, sometimes a woman, varied skin and hair. */
+export function lookFor(seed: string, body?: 'male' | 'female'): Look {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619) >>> 0;
+  const pick = <T,>(list: readonly T[], shift: number) => list[(h >>> shift) % list.length];
+  const b = body ?? (h % 2 === 0 ? 'male' : 'female');
+  return { body: b, skin: pick(SKIN_TONES, 3), hair: pick(HAIR_COLORS, 7), top: pick(TOPS[b], 11), bottom: BOTTOMS[b] };
+}
+
+const FIXED = { shoe: 0xf1f5f9, sole: 0x94a3b8, sock: 0xffffff, trim: 0xe2e8f0 } as const;
+type ColorKind = 'skin' | 'hair' | 'top' | 'bottom' | keyof typeof FIXED;
 export const HIGHLIGHT_COLOR = 0x14b8a6;
 
-export function createRig(): Rig {
+export function createRig(look: Look = DEFAULT_LOOK): Rig {
+  const female = look.body === 'female';
+  const colorOf = (k: ColorKind) => (k === 'skin' ? look.skin : k === 'hair' ? look.hair : k === 'top' ? look.top : k === 'bottom' ? look.bottom : FIXED[k]);
+
   const root = new THREE.Group();
   const joints = {} as Record<JointName, THREE.Object3D>;
   for (const name of JOINT_NAMES) {
@@ -132,7 +155,7 @@ export function createRig(): Rig {
   }
 
   const geos: THREE.BufferGeometry[] = [];
-  const sphere = new THREE.SphereGeometry(1, 24, 16);
+  const sphere = new THREE.SphereGeometry(1, 32, 24);
   geos.push(sphere);
   const segments = {} as Record<SegmentName, THREE.Mesh[]>;
   const bodyMeshes: THREE.Mesh[] = [];
@@ -142,8 +165,8 @@ export function createRig(): Rig {
     const key = `${seg ?? '-'}|${kind}`;
     let m = materials.get(key);
     if (!m) {
-      const base = new THREE.Color(COLORS[kind]);
-      const rough = kind === 'shoe' || kind === 'sole' ? 0.5 : kind === 'hair' ? 0.9 : 0.7;
+      const base = new THREE.Color(colorOf(kind));
+      const rough = kind === 'shoe' || kind === 'sole' ? 0.5 : kind === 'hair' ? 0.85 : kind === 'skin' ? 0.6 : 0.8;
       m = { mat: new THREE.MeshStandardMaterial({ color: base.clone(), roughness: rough, metalness: 0 }), seg, base };
       materials.set(key, m);
     }
@@ -163,44 +186,70 @@ export function createRig(): Rig {
     return mesh;
   };
   const capsule = (radius: number, length: number) => {
-    const g = new THREE.CapsuleGeometry(radius, length, 6, 16);
+    const g = new THREE.CapsuleGeometry(radius, length, 8, 20);
     geos.push(g);
     return g;
   };
   /** Tapered limb piece hanging down from its joint, from y = -top to y = -top - length. */
   const limb = (parent: JointName, rTop: number, rBottom: number, top: number, length: number, seg: SegmentName, kind: ColorKind) => {
-    const g = new THREE.CylinderGeometry(rTop, rBottom, length, 18, 1);
+    const g = new THREE.CylinderGeometry(rTop, rBottom, length, 24, 1);
     geos.push(g);
     add(parent, g, [0, -top - length / 2, 0], [1, 1, 1], seg, kind);
   };
+  /** Thin ring (hem of a sleeve or shorts leg, sock top) around a limb at height y. */
+  const ring = (parent: JointName, r: number, y: number, seg: SegmentName, kind: ColorKind) => {
+    const g = new THREE.TorusGeometry(r, 0.006, 8, 28);
+    geos.push(g);
+    add(parent, g, [0, y, 0], [1, 1, 1], seg, kind, [Math.PI / 2, 0, 0]);
+  };
   const ball = (parent: JointName, r: number, kind: ColorKind, seg: SegmentName | null = null) => add(parent, sphere, [0, 0, 0], [r, r, r], seg, kind);
 
-  // ── Trunk ──
-  add('pelvis', sphere, [0, -0.01, 0], [0.165, 0.115, 0.115], 'pelvis', 'shorts');
-  for (const x of [-0.068, 0.068]) add('pelvis', sphere, [x, -0.045, -0.045], [0.085, 0.09, 0.08], 'pelvis', 'shorts'); // buttocks
-  add('spine', capsule(0.11, 0.07), [0, 0.08, 0], [1, 1, 0.78], 'abdomen', 'shirt');
-  add('chest', sphere, [0, 0.14, -0.005], [0.16, 0.2, 0.115], 'chest', 'shirt');
-  add('chest', sphere, [0, 0.235, -0.012], [0.19, 0.075, 0.1], 'chest', 'shirt'); // shoulder line
+  // ── Trunk ── (women: narrower shoulders and waist, wider hips)
+  const hipW = female ? 0.175 : 0.163;
+  add('pelvis', sphere, [0, -0.01, 0], [hipW, 0.115, female ? 0.12 : 0.113], 'pelvis', 'bottom');
+  const butt: Vec3 = female ? [0.092, 0.095, 0.085] : [0.082, 0.088, 0.078];
+  for (const x of [-1, 1]) add('pelvis', sphere, [x * (female ? 0.072 : 0.066), -0.045, -0.045], butt, 'pelvis', 'bottom');
+  add('spine', capsule(female ? 0.098 : 0.108, 0.07), [0, 0.08, 0], [1, 1, 0.8], 'abdomen', 'top');
+  add('chest', sphere, [0, 0.14, -0.005], female ? [0.145, 0.19, 0.11] : [0.162, 0.2, 0.116], 'chest', 'top');
+  add('chest', sphere, [0, 0.235, -0.012], female ? [0.168, 0.068, 0.095] : [0.192, 0.075, 0.1], 'chest', 'top'); // shoulder line
+  // trapezius: a gentle slope from the neck to the shoulders
+  for (const x of [-1, 1]) add('chest', sphere, [x * 0.08, 0.262, -0.022], female ? [0.07, 0.03, 0.05] : [0.08, 0.036, 0.058], 'chest', 'top');
+  // front of the chest: one soft shape (a fuller, rounder one for the woman)
+  add('chest', sphere, [0, female ? 0.15 : 0.17, female ? 0.05 : 0.03], female ? [0.118, 0.07, 0.07] : [0.14, 0.085, 0.085], 'chest', 'top');
+  // waistband: smooth transition between T-shirt and shorts
+  add('pelvis', sphere, [0, 0.055, 0], [hipW * 0.93, 0.045, female ? 0.1 : 0.098], 'pelvis', 'bottom');
   // ── Neck & head ──
-  const neckGeo = new THREE.CylinderGeometry(0.044, 0.05, 0.1, 16);
+  const neckGeo = new THREE.CylinderGeometry(female ? 0.039 : 0.045, female ? 0.045 : 0.052, 0.1, 20);
   geos.push(neckGeo);
   add('neck', neckGeo, [0, 0.03, 0], [1, 1, 1], 'neck', 'skin');
-  add('head', sphere, [0, 0.1, 0.005], [0.088, 0.11, 0.1], 'head', 'skin'); // skull
-  add('head', sphere, [0, 0.045, 0.035], [0.066, 0.055, 0.07], 'head', 'skin'); // jaw
-  add('head', sphere, [0, 0.085, 0.1], [0.014, 0.022, 0.02], 'head', 'skin'); // nose: shows which way the head faces
-  for (const x of [-0.087, 0.087]) add('head', sphere, [x, 0.085, 0], [0.014, 0.026, 0.02], 'head', 'skin'); // ears
-  add('head', sphere, [0, 0.125, -0.015], [0.094, 0.098, 0.1], 'head', 'hair');
+  const hs = female ? 0.95 : 1; // head size
+  add('head', sphere, [0, 0.1, 0.005], [0.088 * hs, 0.11 * hs, 0.1 * hs], 'head', 'skin'); // skull
+  add('head', sphere, [0, 0.045, 0.035], female ? [0.058, 0.05, 0.065] : [0.066, 0.056, 0.07], 'head', 'skin'); // jaw
+  add('head', sphere, [0, 0.085, 0.098 * hs], [0.013, 0.021, 0.02], 'head', 'skin'); // nose: shows which way the head faces
+  for (const x of [-1, 1]) add('head', sphere, [x * 0.087 * hs, 0.085, 0], [0.013, 0.025, 0.019], 'head', 'skin'); // ears
+  if (female) {
+    // shoulder-length hair: cap, volume at the back and sides
+    add('head', sphere, [0, 0.12, -0.012], [0.096, 0.1, 0.1], 'head', 'hair');
+    add('head', sphere, [0, 0.06, -0.04], [0.095, 0.105, 0.075], 'head', 'hair');
+    for (const x of [-1, 1]) add('head', sphere, [x * 0.07, 0.06, -0.005], [0.035, 0.085, 0.06], 'head', 'hair');
+  } else {
+    add('head', sphere, [0, 0.125, -0.015], [0.094, 0.098, 0.1], 'head', 'hair');
+  }
 
+  const armScale = female ? 0.9 : 1;
   for (const p of ['l', 'r'] as const) {
     const s = p === 'l' ? 1 : -1; // +1: the figure's left is +X
-    // ── Arm: short sleeve, then skin ──
-    ball(`${p}_shoulder`, 0.058, 'shirt', `${p}_upperarm`);
-    limb(`${p}_shoulder`, 0.053, 0.048, 0, 0.11, `${p}_upperarm`, 'shirt');
-    limb(`${p}_shoulder`, 0.045, 0.037, 0.11, 0.18, `${p}_upperarm`, 'skin');
-    ball(`${p}_elbow`, 0.039, 'skin');
-    limb(`${p}_elbow`, 0.041, 0.029, 0, 0.26, `${p}_forearm`, 'skin');
+    const a = armScale;
+    // ── Arm: short sleeve with a hem, then skin ──
+    ball(`${p}_shoulder`, 0.058 * a, 'top', `${p}_upperarm`);
+    limb(`${p}_shoulder`, 0.053 * a, 0.049 * a, 0, 0.11, `${p}_upperarm`, 'top');
+    ring(`${p}_shoulder`, 0.049 * a, -0.108, `${p}_upperarm`, 'top');
+    limb(`${p}_shoulder`, 0.045 * a, 0.037 * a, 0.11, 0.18, `${p}_upperarm`, 'skin');
+    ball(`${p}_elbow`, 0.039 * a, 'skin');
+    limb(`${p}_elbow`, 0.042 * a, 0.028 * a, 0, 0.26, `${p}_forearm`, 'skin');
     // ── Hand: palm, four fingers, thumb (palm faces the body when the arm hangs) ──
-    add(`${p}_wrist`, sphere, [0, -0.048, 0], [0.019, 0.05, 0.043], `${p}_hand`, 'skin');
+    const hsz = female ? 0.92 : 1;
+    add(`${p}_wrist`, sphere, [0, -0.048 * hsz, 0], [0.019, 0.05 * hsz, 0.043 * hsz], `${p}_hand`, 'skin');
     const fingers: [number, number][] = [
       [0.026, 0.044],
       [0.009, 0.05],
@@ -208,17 +257,21 @@ export function createRig(): Rig {
       [-0.025, 0.038],
     ];
     for (const [z, len] of fingers) {
-      add(`${p}_wrist`, capsule(0.0085, len - 0.017), [-0.004 * s, -0.092 - len / 2, z], [1, 1, 1], `${p}_hand`, 'skin', [0, 0, 0.12 * s]);
+      const l = len * hsz;
+      add(`${p}_wrist`, capsule(0.0085 * hsz, l - 0.017), [-0.004 * s, -0.092 * hsz - l / 2, z * hsz], [1, 1, 1], `${p}_hand`, 'skin', [0, 0, 0.12 * s]);
     }
-    add(`${p}_wrist`, capsule(0.0105, 0.03), [-0.012 * s, -0.055, 0.045], [1, 1, 1], `${p}_hand`, 'skin', [-0.55, 0, 0.25 * s]);
-    // ── Leg: shorts, then skin with a calf, shoe ──
-    ball(`${p}_hip`, 0.074, 'shorts', `${p}_thigh`);
-    limb(`${p}_hip`, 0.075, 0.07, 0, 0.2, `${p}_thigh`, 'shorts');
-    limb(`${p}_hip`, 0.067, 0.051, 0.2, 0.23, `${p}_thigh`, 'skin');
+    add(`${p}_wrist`, capsule(0.0105 * hsz, 0.03 * hsz), [-0.012 * s, -0.055 * hsz, 0.045 * hsz], [1, 1, 1], `${p}_hand`, 'skin', [-0.55, 0, 0.25 * s]);
+    // ── Leg: shorts with a hem, then skin with knee cap and calf, sock and shoe ──
+    ball(`${p}_hip`, 0.074, 'bottom', `${p}_thigh`);
+    limb(`${p}_hip`, female ? 0.078 : 0.075, 0.07, 0, 0.2, `${p}_thigh`, 'bottom');
+    ring(`${p}_hip`, 0.07, -0.198, `${p}_thigh`, 'bottom');
+    limb(`${p}_hip`, female ? 0.069 : 0.067, 0.051, 0.2, 0.23, `${p}_thigh`, 'skin');
     ball(`${p}_knee`, 0.053, 'skin');
+    add(`${p}_knee`, sphere, [0, 0.005, 0.042], [0.032, 0.036, 0.022], `${p}_shin`, 'skin'); // knee cap
     limb(`${p}_knee`, 0.05, 0.034, 0, 0.42, `${p}_shin`, 'skin');
-    add(`${p}_knee`, sphere, [0, -0.13, -0.022], [0.05, 0.1, 0.05], `${p}_shin`, 'skin'); // calf
-    ball(`${p}_ankle`, 0.038, 'skin');
+    add(`${p}_knee`, sphere, [0, -0.13, -0.022], female ? [0.047, 0.1, 0.048] : [0.05, 0.1, 0.05], `${p}_shin`, 'skin'); // calf
+    limb(`${p}_knee`, 0.038, 0.037, 0.37, 0.05, `${p}_shin`, 'sock');
+    ball(`${p}_ankle`, 0.038, 'sock');
     add(`${p}_ankle`, sphere, [0, -0.048, 0.055], [0.048, 0.032, 0.122], `${p}_foot`, 'shoe');
     add(`${p}_ankle`, sphere, [0, -0.045, -0.02], [0.042, 0.037, 0.05], `${p}_foot`, 'shoe'); // heel
     const sole = new THREE.BoxGeometry(0.088, 0.012, 0.25);

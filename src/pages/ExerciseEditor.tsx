@@ -311,7 +311,7 @@ export default function ExerciseEditor() {
         {draft.puppet ? (
           <div className="aspect-video overflow-hidden rounded-xl bg-slate-100">
             <Suspense fallback={null}>
-              <PuppetViewer exercise={draft.puppet} />
+              <PuppetViewer exercise={draft.puppet} seed={id ?? 'new'} />
             </Suspense>
           </div>
         ) : (

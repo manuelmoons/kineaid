@@ -49,7 +49,7 @@ export default function PuppetDemo() {
         </ul>
         <div className="space-y-3">
           <div className="aspect-video overflow-hidden rounded-2xl bg-slate-100">
-            <PuppetViewer exercise={PUPPET_EXERCISES[ex.id]} side={side} />
+            <PuppetViewer exercise={PUPPET_EXERCISES[ex.id]} side={side} seed={ex.id} />
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-slate-500">{t('puppet.side')}:</span>

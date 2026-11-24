@@ -31,7 +31,7 @@ export default function ExerciseInfo({
       <div className={`relative overflow-hidden rounded-2xl bg-slate-100 ${compact ? 'aspect-[4/3]' : 'aspect-video'}`}>
         {puppet ? (
           <Suspense fallback={<ExerciseThumb url={null} bodyParts={exercise.body_parts} />}>
-            <PuppetViewer exercise={puppet} side={side} />
+            <PuppetViewer exercise={puppet} side={side} seed={exercise.id} />
           </Suspense>
         ) : (
           <ExerciseThumb key={images[imgIndex]?.url ?? 'none'} url={images[imgIndex]?.url} bodyParts={exercise.body_parts} alt={tr?.name} />

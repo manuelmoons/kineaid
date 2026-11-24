@@ -92,7 +92,13 @@
     "demoTitle": "3D-oefenpop (prototype)",
     "demoIntro": "Bewegende pop voor de KineAid-oefeningen. Sleep om het beeld te draaien.",
     "side": "Kant",
-    "auto": "Automatisch"
+    "auto": "Automatisch",
+    "figureTitle": "Kies wie de oefening voordoet",
+    "figure": {
+      "auto": "👤 Afwisselend",
+      "male": "👨 Man",
+      "female": "👩 Vrouw"
+    }
   },
   "workout": {
     "start": "Start",

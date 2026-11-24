@@ -92,7 +92,13 @@
     "demoTitle": "3D exercise puppet (prototype)",
     "demoIntro": "Animated mannequin for the KineAid exercises. Drag to rotate the view.",
     "side": "Side",
-    "auto": "Auto"
+    "auto": "Auto",
+    "figureTitle": "Choose who shows the exercise",
+    "figure": {
+      "auto": "👤 Varied",
+      "male": "👨 Man",
+      "female": "👩 Woman"
+    }
   },
   "workout": {
     "start": "Start",
