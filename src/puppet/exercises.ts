@@ -376,6 +376,29 @@ export const PUPPET_EXERCISES: Record<string, PuppetExercise> = {
     highlight: ['abdomen'],
   },
 
+  'hollow-hold': {
+    base: 'supine',
+    keyframes: [
+      { pose: {}, move: 1.2, hold: 1 },
+      // Solved: pelvis tilted back so the lower back stays on the mat (1 cm), upper back curled so the
+      // shoulders lift ~8 cm, straight legs ~15° up (heels ~27 cm), arms reaching towards the feet.
+      {
+        pose: {
+          pelvis: [-100, 0, 0],
+          chest: [40, 0, 0],
+          neck: [20, 0, 0],
+          ...legs(-5, 0, 20, 2),
+          ...arms(-25, 0, 8),
+        },
+        move: 1.5,
+        hold: 3,
+      },
+    ],
+    props: [MAT],
+    view: { az: 90, el: 12 },
+    highlight: ['abdomen'],
+  },
+
   'hamstring-stretch': {
     base: 'supine',
     keyframes: [

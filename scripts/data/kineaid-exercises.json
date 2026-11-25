@@ -506,5 +506,26 @@
       "instructions": ["Stand next to or behind a sturdy chair and support yourself with your hands on the chair.", "Put one leg forward (next to the chair) and take a big step back with the other leg, onto the ball of your foot.", "Lower straight down with your back knee towards the floor (it may touch the floor, but doesn't have to).", "Come back up and switch legs. Alternate left and right."],
       "attention_points": ["Your front knee stays above your ankle and points in the direction of your toes.", "Keep your trunk upright; don't lean forward onto the chair.", "Lower with control; don't drop onto your knee.", "Use the chair for balance, not to pull yourself up."]
     }
+  },
+  {
+    "id": "hollow-hold",
+    "kind": "time",
+    "body_parts": ["core"],
+    "muscles": ["abdominals", "rectus abdominis", "hip flexors"],
+    "equipment": "body only",
+    "level": "intermediate",
+    "default_sets": 3, "default_reps": 1, "default_hold_sec": 30, "default_rest_sec": 45,
+    "nl": {
+      "name": "Holle houding (hollow hold)",
+      "description": "Versterkt vooral de buikspieren door benen en bovenlichaam los van de grond te houden.",
+      "instructions": ["Lig op je rug op een mat, benen gestrekt, armen naast je lichaam.", "Duw je onderrug plat tegen de mat door je buik aan te spannen.", "Til je hoofd en schouders op en strek je armen naar je voeten.", "Til tegelijk je gestrekte benen een eind van de grond.", "Houd deze positie aan en leg daarna rustig alles terug neer."],
+      "attention_points": ["Je onderrug blijft de hele tijd tegen de mat; komt ze los, til je benen dan hoger of buig je knieën.", "Kin licht naar de borst, niet aan je nek trekken.", "Blijf rustig doorademen."]
+    },
+    "en": {
+      "name": "Hollow hold",
+      "description": "Strengthens mainly the abdominal muscles by keeping the legs and upper body off the floor.",
+      "instructions": ["Lie on your back on a mat, legs straight, arms by your sides.", "Press your lower back flat into the mat by tightening your abdominal muscles.", "Lift your head and shoulders and reach your arms towards your feet.", "At the same time, lift your straight legs a little off the floor.", "Hold this position, then slowly lower everything again."],
+      "attention_points": ["Your lower back stays on the mat the whole time; if it lifts, raise your legs higher or bend your knees.", "Chin slightly towards your chest; do not pull on your neck.", "Keep breathing calmly."]
+    }
   }
 ]
